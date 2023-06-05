@@ -112,9 +112,7 @@
                             }
                         }
 
-                        cache: false,
-                        contentType: false,
-                        processData: false
+                        
                     });
 
 

@@ -99,7 +99,7 @@
 
 
                 function registeruser() {
-                    
+
 
                     var _token = $("input[name='_token']").val();
                     var first_name = $("#firstname").val();
@@ -130,9 +130,7 @@
 
                             }
                         }
-                        cache: false,
-                        contentType: false,
-                        processData: false
+                        
                     });
 
 
