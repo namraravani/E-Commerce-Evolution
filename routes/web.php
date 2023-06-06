@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -28,8 +29,7 @@ Route::post('/admin/register',[AuthController::class,'validateform_register'])->
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::resource('category', CategoryController::class);
-
-
+Route::resource('user', UserController::class);
 
 Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');
 

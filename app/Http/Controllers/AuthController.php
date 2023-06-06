@@ -44,11 +44,11 @@ class AuthController extends Controller
 
         if($validator->passes())
         {
-            $user = DB::table('register')->where('email',$req->email)->where('password',$req->password)->value('email','password');
+            $user = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('email','password');
 
             if($user)
             {
-                $hello = DB::table('register')->where('email',$req->email)->where('password',$req->password)->value('first_name');
+                $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
                 Session::put('user',$hello);
                 return response()->json(['success'=>'New Account Created Succesfully']);
             }
@@ -73,7 +73,7 @@ class AuthController extends Controller
     ]);
     if ($validator->passes())
     {
-        DB::table('register')->insert([
+        DB::table('users')->insert([
 
             'first_name' => $req->first_name,
             'last_name' => $req->last_name,
@@ -94,12 +94,11 @@ class AuthController extends Controller
 
     }
 
-    
+
 
 
 
 
 
 }
-
 

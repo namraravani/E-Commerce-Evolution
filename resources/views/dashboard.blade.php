@@ -34,6 +34,8 @@
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Admin</li>
                         </ol>
+                        @yield('category-content')
+                        @yield('user-content')
 
 
 

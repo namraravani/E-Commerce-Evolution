@@ -24,7 +24,7 @@
             <th>No</th>
             <th>Image</th>
             <th>Name</th>
-            <th>Details</th>
+            <th>Status</th>
             <th width="200px">Action</th>
         </tr>
         </thead>
@@ -47,7 +47,7 @@
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit" class="btn btn-danger"><i class="fa-sharp fa-solid fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger"></button>
                         </form>
                     </td>
                 </tr>

@@ -1,9 +1,9 @@
 @extends('dashboard')
-@section('category-content')
+@section('user-content')
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Category</title>
+    <title>user</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
@@ -19,6 +19,9 @@
       });
 </script>
 
+
+
+
 </head>
 <body>
 
@@ -26,6 +29,5 @@
     @yield('content')
 </div>
 @endsection
-
 </body>
 </html>
