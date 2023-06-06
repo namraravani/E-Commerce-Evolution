@@ -36,10 +36,14 @@
         <div class="col-xs-5 col-sm-5 col-md-5">
             <div class="form-group">
                 <strong>Status:</strong>
-                <select class="form-select" id="status" name="status" required>
-                    <option value=1>Active</option>
-                    <option value=0>In_Active</option>
-                </select>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
+                    <label class="form-check-label" for="active">Active</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
+                    <label class="form-check-label" for="inactive">Inactive</label>
+                </div>
 
             </div>
         </div>
@@ -47,6 +51,7 @@
             <div class="form-group">
                 <strong>Image:</strong>
                 <input type="file" name="image" class="form-control" placeholder="image">
+                
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 text-center">

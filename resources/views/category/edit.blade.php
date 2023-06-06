@@ -36,18 +36,23 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <strong>status:</strong>
-                    <select class="form-select" id="status" name="status" required>
-                        <option value=1>Active</option>
-                        <option value=0>In_Active</option>
-                    </select>
+                    <strong>Status:</strong>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="active" value="1" {{ $category->status == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="active">Active</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="inactive" value="0" {{ $category->status == 0 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="inactive">Inactive</label>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <strong>Image:</strong>
-                    <input type="file" name="image" class="form-control" placeholder="image">
+                    <input type="file" name="image" class="form-control" placeholder="Image">
                     <img src="/images/{{ $category->image }}" width="300px">
+                    <input type="checkbox" name="delete_image" value="1"><label>Delete Image</label>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
@@ -56,4 +61,3 @@
         </div>
 
     </form>
-@endsection

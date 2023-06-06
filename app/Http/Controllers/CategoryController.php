@@ -6,12 +6,11 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\User;
 use DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $categories = category::latest()->paginate(5);
@@ -20,17 +19,13 @@ class CategoryController extends Controller
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         return view('category.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -55,25 +50,19 @@ class CategoryController extends Controller
                         ->with('success','category created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Category $category)
     {
         return view('category.show',compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Category $category)
     {
         return view('category.edit',compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -84,24 +73,46 @@ class CategoryController extends Controller
 
         $input = $request->all();
 
-        if ($image = $request->file('image')) {
-            $destinationPath = 'images/';
-            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-            $image->move($destinationPath, $profileImage);
-            $input['image'] = "$profileImage";
-        }else{
-            unset($input['image']);
+        $request->validate([
+            'name' => 'required',
+            'status' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Check if the delete_image checkbox is checked
+        if ($request->has('delete_image')) {
+            // Delete the image from the folder
+            if (Storage::disk('public')->exists('/images/'.$category->image)) {
+                Storage::disk('public')->delete('/images/'.$category->image);
+            }
+
+            // Update the category's image column to null or any desired default image value
+            $category->image = null; // or set it to your default image value
         }
 
-        $category->update($input);
+        // Update the category's other fields
+        $category->name = $request->name;
+        $category->status = $request->status;
+
+        // Check if a new image file is uploaded
+        if ($request->hasFile('image')) {
+            // Delete the existing image if present
+            if (Storage::disk('public')->exists('/images/'.$category->image)) {
+                Storage::disk('public')->delete('/images/'.$category->image);
+            }
+
+            // Upload and store the new image file
+            $imagePath = $request->file('image')->store('images', 'public');
+            $category->image = $imagePath;
+        }
+
+        $category->save();
 
         return redirect()->route('category.index')
-                        ->with('success','category updated successfully');
+            ->with('success', 'Category updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Category $category)
     {
         $category->delete();
@@ -109,6 +120,12 @@ class CategoryController extends Controller
         return redirect()->route('category.index')
                         ->with('success','category deleted successfully');
     }
+
+
+
+
+
+
 
 
 }

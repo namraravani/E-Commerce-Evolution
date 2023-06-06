@@ -31,6 +31,12 @@ Route::resource('category', CategoryController::class);
 
 
 
+Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');
+
+
+
+
+
 
 
 

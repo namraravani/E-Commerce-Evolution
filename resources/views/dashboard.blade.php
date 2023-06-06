@@ -30,11 +30,11 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4"><span style="color:blue;">Welcome {{session('user')}} </span></h1>
+                        <h1 class="mt-4"><span style="color:blue;">Welcome, {{session('user')}} </span></h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Admin</li>
                         </ol>
-                        
+
 
 
 

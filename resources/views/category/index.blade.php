@@ -25,7 +25,7 @@
             <th>Image</th>
             <th>Name</th>
             <th>Details</th>
-            <th width="280px">Action</th>
+            <th width="200px">Action</th>
         </tr>
         </thead>
 
@@ -42,7 +42,7 @@
 
                             <a class="btn btn-info" href="{{ route('category.show',$category->id) }}"><i class="fa-solid fa-eye"></i> </a>
 
-                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen"></i> </a>
+                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen"></i></a>
 
                             @csrf
                             @method('DELETE')
