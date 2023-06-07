@@ -1,0 +1,45 @@
+.form-bordered {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"],
+.form-control-file {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-check-label {
+    margin-left: 5px;
+}
+
+.btn-primary{
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+.btn-danger{
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+.btn-info{
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+
+.form-title {
+    text-align: center;
+    text-decoration: underline;
+    margin-bottom: 20px;
+}

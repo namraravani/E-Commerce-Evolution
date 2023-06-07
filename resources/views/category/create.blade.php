@@ -4,10 +4,10 @@
 <div class="row">
     <div class="col-lg-12 margin-tb">
         <div class="pull-left">
-            <h2>Add New category</h2>
+            <h2>Add New Category</h2>
         </div>
         <div class="pull-right">
-            <a class="btn btn-primary" href="{{ route('category.index') }}"> Back</a>
+            <a class="btn btn-primary" href="{{ route('category.index') }}">Back</a>
         </div>
     </div>
 </div>
@@ -23,19 +23,19 @@
     </div>
 @endif
 
-<form action="{{ route('category.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('category.store') }}" method="POST" enctype="multipart/form-data" class="form-bordered">
     @csrf
 
-     <div class="row">
-        <div class="col-xs-5 col-sm-5 col-md-5">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Name:</strong>
-                <input type="text" name="name" class="form-control" placeholder="Name">
+                <label for="name">Name:</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="Enter Name">
             </div>
         </div>
-        <div class="col-xs-5 col-sm-5 col-md-5">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Status:</strong>
+                <label for="status">Status:</label>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
                     <label class="form-check-label" for="active">Active</label>
@@ -44,20 +44,17 @@
                     <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
                     <label class="form-check-label" for="inactive">Inactive</label>
                 </div>
-
             </div>
         </div>
-        <div class="col-xs-5 col-sm-5 col-md-5">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Image:</strong>
-                <input type="file" name="image" class="form-control" placeholder="image">
-                
+                <label for="image">Image:</label>
+                <input type="file" name="image" class="form-control-file" id="image" accept="image/">
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </div>
-
 </form>
 @endsection

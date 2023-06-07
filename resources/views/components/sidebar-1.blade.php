@@ -9,22 +9,22 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Dashboard
                 </a>
-                <div class="sb-sidenav-menu-heading">Functionalites</div>
+
                 <a class="nav-link" href="/admin/dashboard/category">
-                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-c"></i></div>
                     category
 
                 </a>
 
                 <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                    Pages
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                    Product
 
                 </a>
 
-                <div class="sb-sidenav-menu-heading">Addons</div>
+
                 <a class="nav-link" href="/user">
-                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
                     Users
                 </a>
                 <a class="nav-link" href="tables.html">
@@ -35,7 +35,7 @@
         </div>
         <div class="sb-sidenav-footer">
             <div class="small">Logged in as:</div>
-            Namra
+            {{session('user')}}
         </div>
     </nav>
 </div>

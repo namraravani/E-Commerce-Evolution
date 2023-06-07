@@ -51,8 +51,8 @@
                 <div class="form-group">
                     <strong>Image:</strong>
                     <input type="file" name="image" class="form-control" placeholder="Image">
-                    <img src="/images/{{ $category->image }}" width="300px">
-                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label>Delete Image</label>
+                    <img src="/{{ $category->image }}" width="300px">
+                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
@@ -61,8 +61,7 @@
         </div>
 
     </form>
-
-@endsection
+    @endsection
 
 
 

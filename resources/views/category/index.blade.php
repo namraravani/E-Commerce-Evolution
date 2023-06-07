@@ -18,6 +18,18 @@
         </div>
     @endif
 
+    <form action="{{ route('category.index') }}" method="GET">
+
+        <div class="form-group">
+            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{$search}}">
+            <button class="btn btn-primary">Search</button>
+        <a href="{{url('/admin/dashboard/category')}}">
+            <button class="btn btn-primary">Reset</button>
+        </a>
+        </div>
+
+    </form>
+
     <table class="table" id="table">
         <thead>
         <tr>
@@ -33,7 +45,7 @@
                 @foreach($categories as $category)
                 <tr class="category{{$category->id}}">
                     <td>{{++$i}}</td>
-                    <td><img src="/images/{{ $category->image }}" width="100px"></td>
+                    <td><img src="/{{$category->image}}" width="100px"></td>
                     <td>{{$category->name}}</td>
                     <td>{{ $category->status == 1 ? 'Active' : 'InActive' }}</td>
 
@@ -42,12 +54,12 @@
 
                             <a class="btn btn-info" href="{{ route('category.show',$category->id) }}"><i class="fa-solid fa-eye"></i> </a>
 
-                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen"></i></a>
 
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+                            <button type="submit" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
                         </form>
                     </td>
                 </tr>
@@ -55,7 +67,11 @@
                 </tbody>
 
 
+
+
+
     </table>
-    {!!$categories->links()!!}
+    {{$categories->links()}}
+
 
 @endsection

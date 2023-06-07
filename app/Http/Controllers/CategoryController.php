@@ -7,17 +7,31 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use DataTables;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection\links;
+
 
 class CategoryController extends Controller
 {
 
-    public function index()
-    {
-        $categories = category::latest()->paginate(5);
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+    $query = Category::query();
 
-        return view('category.index',compact('categories'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+    if ($search) {
+        $query->where('name', 'LIKE', "%$search%");
     }
+
+    $categories = $query->latest()->paginate(5);
+    Paginator::useBootstrap();
+
+    return view('category.index', compact('categories', 'search'))
+        ->with('i', ($categories->currentPage() - 1) * 5);
+}
+
 
 
     public function create()
@@ -34,22 +48,23 @@ class CategoryController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $input = $request->all();
-
-
-        if ($image = $request->file('image')) {
-            $destinationPath = 'images/';
-            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
-            $image->move($destinationPath, $profileImage);
-            $input['image'] = "$profileImage";
+        $imagename= date('d-m-y')."-".$request->image->getClientOriginalName();
+        $PriorPath=('uploaded_images');
+        if(!$PriorPath){
+            File::makeDirectory('uploaded_images');
         }
+        $path = $request->image->move($PriorPath,$imagename);
 
-        category::create($input);
+        DB::table('categories')->insert([
+            'name' => $request->name,
+            'status' => $request->status,
+            'image' => $path,
+
+        ]);
 
         return redirect()->route('category.index')
-                        ->with('success','category created successfully.');
+            ->with('success', 'Category created successfully.');
     }
-
 
     public function show(Category $category)
     {
@@ -68,44 +83,33 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required',
             'status' => 'required',
-
-        ]);
-
-        $input = $request->all();
-
-        $request->validate([
-            'name' => 'required',
-            'status' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Check if the delete_image checkbox is checked
-        if ($request->has('delete_image')) {
-            // Delete the image from the folder
-            if (Storage::disk('public')->exists('/images/'.$category->image)) {
-                Storage::disk('public')->delete('/images/'.$category->image);
+        $previousImage = $category->image;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
+            $destinationPath = 'uploaded_images';
+            $path = $image->move($destinationPath, $imageName);
+
+            if ($previousImage) {
+                // Delete the previous image
+                File::delete(public_path($previousImage));
             }
 
-            // Update the category's image column to null or any desired default image value
-            $category->image = null; // or set it to your default image value
+            $category->image = $path;
+        } elseif ($request->has('delete_image')) {
+            // Delete the image if delete_image checkbox is selected
+            if ($previousImage) {
+                File::delete(public_path($previousImage));
+            }
+            $category->image = null;
         }
 
-        // Update the category's other fields
         $category->name = $request->name;
         $category->status = $request->status;
-
-        // Check if a new image file is uploaded
-        if ($request->hasFile('image')) {
-            // Delete the existing image if present
-            if (Storage::disk('public')->exists('/images/'.$category->image)) {
-                Storage::disk('public')->delete('/images/'.$category->image);
-            }
-
-            // Upload and store the new image file
-            $imagePath = $request->file('image')->store('images', 'public');
-            $category->image = $imagePath;
-        }
-
         $category->save();
 
         return redirect()->route('category.index')
