@@ -28,7 +28,7 @@ Route::post('/admin/login',[AuthController::class,'validateform'])->name('valida
 Route::post('/admin/register',[AuthController::class,'validateform_register'])->name('validateform_register');
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
-Route::resource('category', CategoryController::class);
+Route::resource('/admin/dashboard/category', CategoryController::class);
 Route::resource('user', UserController::class);
 
 Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');

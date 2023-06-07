@@ -42,12 +42,12 @@
 
                             <a class="btn btn-info" href="{{ route('category.show',$category->id) }}"><i class="fa-solid fa-eye"></i> </a>
 
-                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen"></i></a>
+                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen-to-square"></i></a>
 
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit" class="btn btn-danger"></button>
+                            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
                         </form>
                     </td>
                 </tr>
