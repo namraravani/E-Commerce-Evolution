@@ -7,15 +7,25 @@ use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Pagination\Paginator;
 
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(5);
+        $search = $request->input('search');
 
-        return view('user.index',compact('users'))
+        $query = User::query();
+        $users = User::latest()->paginate(5);
+        if ($search) {
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        $users = $query->latest()->paginate(1);
+        Paginator::useBootstrap();
+
+        return view('user.index',compact('users','search'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
@@ -60,21 +70,19 @@ class UserController extends Controller
     }
 
 
-    public function update(Request $request, Register $user)
+    public function update(Request $request, User $user)
     {
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
-            
+
 
         ]);
 
-        $input = $request->all();
-
-
-
-
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
         $user->save();
 
         return redirect()->route('user.index')

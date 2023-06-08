@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
+
 
 
 /*
@@ -29,7 +31,12 @@ Route::post('/admin/register',[AuthController::class,'validateform_register'])->
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::resource('/admin/dashboard/category', CategoryController::class);
-Route::resource('user', UserController::class);
+Route::resource('/admin/dashboard/user', UserController::class);
+// Route::get('/admin/dashboard/user',[UserController::class,'index']);
+Route::post('fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
+Route::post('fetchcity', [CustomerController::class,'fetchcity'])->name('fetchcity');;
+
+Route::resource('/admin/dashboard/customer', CustomerController::class);
 
 Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');
 

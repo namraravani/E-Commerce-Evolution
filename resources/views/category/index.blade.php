@@ -19,16 +19,18 @@
     @endif
 
     <form action="{{ route('category.index') }}" method="GET">
-
-        <div class="form-group">
-            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{$search}}">
-            <button class="btn btn-primary">Search</button>
-        <a href="{{url('/admin/dashboard/category')}}">
-            <button class="btn btn-primary">Reset</button>
-        </a>
+        <div>
+            <input type="number" name="page_box" class="form-control"><button class="btn btn-primary">GO</button>
         </div>
-
+        <div class="form-group">
+            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{ $search }}">
+            <button class="btn btn-primary">Search</button>
+            <a href="{{ url('/admin/dashboard/category') }}">
+                <button type="button" class="btn btn-primary">Reset</button>
+            </a>
+        </div>
     </form>
+
 
     <table class="table" id="table">
         <thead>
@@ -66,11 +68,10 @@
                 @endforeach
                 </tbody>
 
-
-
-
-
     </table>
+    <div>
+        Showing {{$categories->firstItem()}} - {{$categories->lastItem()}} of {{$categories->total()}}
+    </div>
     {{$categories->links()}}
 
 

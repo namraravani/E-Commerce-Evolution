@@ -18,6 +18,16 @@
         </div>
     @endif
 
+    <form action="{{ route('user.index') }}" method="GET">
+        <div class="form-group">
+            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{ $search }}">
+            <button class="btn btn-primary">Search</button>
+            <a href="{{ url('/user') }}">
+                <button type="button" class="btn btn-primary">Reset</button>
+            </a>
+        </div>
+    </form>
+
     <table class="table" id="table">
         <thead>
         <tr>

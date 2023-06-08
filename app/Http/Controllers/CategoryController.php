@@ -18,14 +18,16 @@ class CategoryController extends Controller
 
     public function index(Request $request)
 {
+    // $page_box = $request->input('page_box');
     $search = $request->input('search');
+
     $query = Category::query();
 
     if ($search) {
         $query->where('name', 'LIKE', "%$search%");
     }
 
-    $categories = $query->latest()->paginate(5);
+    $categories = $query->latest()->paginate(1);
     Paginator::useBootstrap();
 
     return view('category.index', compact('categories', 'search'))

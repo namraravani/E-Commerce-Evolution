@@ -23,13 +23,13 @@
                 </a>
 
 
-                <a class="nav-link" href="/user">
+                <a class="nav-link" href="/admin/dashboard/user">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
                     Users
                 </a>
-                <a class="nav-link" href="tables.html">
-                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                    Tables
+                <a class="nav-link" href="/admin/dashboard/customer">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-face-smile"></i></div>
+                    Customers
                 </a>
             </div>
         </div>
