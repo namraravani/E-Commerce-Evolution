@@ -11,4 +11,14 @@ class State extends Model
     protected $fillable = [
         'name','country_id'
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city()
+    {
+        return $this->hasmany(City::class);
+    }
 }

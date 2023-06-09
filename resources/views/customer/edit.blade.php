@@ -27,6 +27,15 @@
         @csrf
         @method('PUT')
 
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
+                <strong>Image:</strong>
+                <input type="file" name="image" class="form-control" placeholder="Image">
+                <img src="/{{ $customer->image }}" width="300px">
+                <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
+            </div>
+        </div>
+
          <div class="row">
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
@@ -64,19 +73,27 @@
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
                     <strong>Country</strong>
-                    <input type="text" name="country" value="{{ $customer->country }}" class="form-control" placeholder="country">
+
+                    <select name="country" id="country-dropdown" class="form-control">
+                        <option value="{{ $customer->country }}">Select Country</option>
+                        @foreach($countries as $data)
+                            <option value="{{$data->id}}">{{$data->name}}</option>
+                         @endforeach
+                    </select>
                 </div>
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
                     <strong>State</strong>
-                    <input type="text" name="state" value="{{ $customer->state }}" class="form-control" placeholder="state">
+                    <select name="state" id="state-dropdown" class="form-control">
+                    </select>
                 </div>
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
                     <strong>City</strong>
-                    <input type="text" name="city" value="{{ $customer->city }}" class="form-control" placeholder="city">
+                    <select name="city" id="city-dropdown" class="form-control">
+                    </select>
                 </div>
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5">
@@ -90,6 +107,54 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#country-dropdown').on('change', function() {
+                var country_id = this.value;
+                console.log(country_id);
+                $("#state-dropdown").html('');
+                $.ajax({
+                    url: "{{ route('fetchstate') }}",
+                    type: "POST",
+                    data: {
+                        country_id: country_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('#state-dropdown').html('<option value="">-- Select State --</option>');
+                        $.each(result.states,function(key, value) {
+                            $("#state-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                        $('#city-dropdown').html('<option value="">-- Select cityt --</option>');
+
+                    }
+                });
+            });
+
+            $('#state-dropdown').on('change', function() {
+                var idState = this.value;
+                $("#city-dropdown").html('');
+                $.ajax({
+                    url: "{{ route('fetchcity') }}",
+                    type: "POST",
+                    data: {
+                        state_id: idState,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        $('#city-dropdown').html('<option value="">-- Select City --</option>');
+                        $.each(res.cities, function(key, value) {
+                            $("#city-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
     </form>
 

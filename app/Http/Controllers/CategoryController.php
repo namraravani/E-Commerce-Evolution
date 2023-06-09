@@ -27,7 +27,7 @@ class CategoryController extends Controller
         $query->where('name', 'LIKE', "%$search%");
     }
 
-    $categories = $query->latest()->paginate(1);
+    $categories = $query->latest()->paginate(5);
     Paginator::useBootstrap();
 
     return view('category.index', compact('categories', 'search'))

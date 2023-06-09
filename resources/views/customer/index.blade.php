@@ -32,6 +32,7 @@
         <thead>
         <tr>
             <th>No</th>
+            <th>Image</th>
             <th>first_name</th>
             <th>last_name</th>
             <th>email</th>
@@ -47,8 +48,9 @@
 
             <tbody>
                 @foreach($customers as $customer)
-                <tr class="customer{{$customer->id}}">
+                <tr class="{{$customer->id}}">
                     <td>{{++$i}}</td>
+                    <td><img src="/{{$customer->image}}" width="100px"></td>
                     <td>{{$customer->first_name}}</td>
                     <td>{{$customer->last_name}}</td>
                     <td>{{$customer->email}}</td>

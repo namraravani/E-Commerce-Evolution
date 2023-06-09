@@ -8,6 +8,7 @@ use DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\File;
 use App\Models\{Country,State,City};
 
 class CustomerController extends Controller
@@ -27,8 +28,6 @@ class CustomerController extends Controller
 
     Paginator::useBootstrap();
 
-     // Fetch countries as name => id pairs
-
     return view('customer.index', compact('customers', 'search'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
 }
@@ -38,11 +37,8 @@ class CustomerController extends Controller
 
 public function fetchstate(Request $request)
 {
-    $countryId = $request->country_id;
-    // Print the value of $countryId in the console
-    
-    $data['states'] = State::where('country_id', $countryId)->get(['name', 'id']);
 
+    $data['states'] = State::where('country_id', $request->country_id)->get(['name', 'id']);
     return response()->json($data);
 }
 
@@ -57,7 +53,7 @@ public function fetchstate(Request $request)
 
     public function create()
     {
-        $data['countries'] = Country::get('name', 'id');
+        $data['countries'] = Country::get(['name', 'id']);
         return view('customer.create',$data);
     }
 
@@ -78,12 +74,34 @@ public function fetchstate(Request $request)
 
         ]);
 
-        $input = $request->all();
+        $imagename= date('d-m-y')."-".$request->image->getClientOriginalName();
+        $PriorPath=('uploaded_images');
+        if(!$PriorPath){
+            File::makeDirectory('uploaded_images');
+        }
+        $path = $request->image->move($PriorPath,$imagename);
+        $country = Country::find($request->country);
+        $state = State::find($request->state);
+        $city = City::find($request->city);
+
+
+        $customer = new Customer();
+        $customer->image = $request->image;
+        $customer->first_name = $request->first_name;
+        $customer->last_name = $request->last_name;
+        $customer->email = $request->email;
+        $customer->mobileno = $request->mobileno;
+        $customer->address = $request->address;
+        $customer->country = $country->name;
+        $customer->state = $state->name;
+        $customer->city = $city->name;
+        $customer->pincode = $request->pincode;
+        $customer->save();
 
 
 
 
-        Customer::create($input);
+
 
         return redirect()->route('customer.index')
                         ->with('success','customer created successfully.');
@@ -98,13 +116,16 @@ public function fetchstate(Request $request)
 
     public function edit(Customer $customer)
     {
-        return view('customer.edit',compact('customer'));
+        $data['countries'] = Country::get(['name', 'id']);
+
+        return view('customer.edit',compact('customer'),$data);
     }
 
 
     public function update(Request $request, Customer $customer)
     {
         $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
@@ -118,14 +139,40 @@ public function fetchstate(Request $request)
 
         ]);
 
+        $country = Country::find($request->country);
+        $state = State::find($request->state);
+        $city = City::find($request->city);
+
+        $previousImage = $customer->image;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
+            $destinationPath = 'uploaded_images';
+            $path = $image->move($destinationPath, $imageName);
+
+            if ($previousImage) {
+
+                File::delete(public_path($previousImage));
+            }
+
+            $customer->image = $path;
+        } elseif ($request->has('delete_image')) {
+
+            if ($previousImage) {
+                File::delete(public_path($previousImage));
+            }
+            $customer->image = null;
+        }
+
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->email = $request->email;
         $customer->mobileno = $request->mobileno;
         $customer->address = $request->address;
-        $customer->country = $request->country;
-        $customer->state = $request->state;
-        $customer->city = $request->city;
+        $customer->country = $country->name;
+        $customer->state = $state->name;
+        $customer->city = $city->name;
         $customer->pincode = $request->pincode;
 
 
