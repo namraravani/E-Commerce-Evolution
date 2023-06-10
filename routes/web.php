@@ -6,6 +6,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ProfileController;
+
+
 
 
 
@@ -31,6 +35,7 @@ Route::post('/admin/register',[AuthController::class,'validateform_register'])->
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::resource('/admin/dashboard/category', CategoryController::class);
+
 Route::resource('/admin/dashboard/user', UserController::class);
 // Route::get('/admin/dashboard/user',[UserController::class,'index']);
 Route::post('fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
@@ -39,6 +44,18 @@ Route::post('fetchcity', [CustomerController::class,'fetchcity'])->name('fetchci
 Route::resource('/admin/dashboard/customer', CustomerController::class);
 
 Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');
+
+
+
+//password resets
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+
+
+// profile route
+Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view']);
 
 
 

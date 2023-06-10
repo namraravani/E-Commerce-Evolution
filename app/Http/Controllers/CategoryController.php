@@ -34,6 +34,20 @@ class CategoryController extends Controller
         ->with('i', ($categories->currentPage() - 1) * 5);
 }
 
+    // public function records(Request $request){
+    //     if($request->ajax()){
+    //         $category = Category::all();
+
+    //         return response()->json([
+    //             'category' => $category
+    //         ]);
+    //     }
+    //     else
+    //     {
+    //         abort(403);
+    //     }
+    // }
+
 
 
     public function create()

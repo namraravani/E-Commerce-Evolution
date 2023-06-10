@@ -35,6 +35,12 @@ class UserController extends Controller
         return view('user.create');
     }
 
+    public function profile_view() {
+
+        return view('profile.profile');
+
+    }
+
 
     public function store(Request $request)
     {

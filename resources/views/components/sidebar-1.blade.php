@@ -28,7 +28,7 @@
                     Users
                 </a>
                 <a class="nav-link" href="/admin/dashboard/customer">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-face-smile"></i></div>
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-person"></i></div>
                     Customers
                 </a>
             </div>

@@ -38,6 +38,7 @@
                         </ol>
                         @yield('category-content')
                         @yield('user-content')
+                        @yield('profile-content')
 
 
 
