@@ -33,6 +33,9 @@ class AuthController extends Controller
 
     }
 
+
+
+
     public function validateform(Request $req)
     {
         $validator = Validator::make($req->all(),[
@@ -49,7 +52,9 @@ class AuthController extends Controller
             if($user)
             {
                 $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
+                $hello1 = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
                 Session::put('user',$hello);
+                Session::put('id',$hello1);
                 return response()->json(['success'=>'New Account Created Succesfully']);
             }
             return response()->json(['failed'=>'Oops it seems like you dont have account or invalid username or password']);

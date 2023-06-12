@@ -18,21 +18,32 @@
         </div>
     @endif
 
-    <form action="{{ route('category.index') }}" method="GET">
-        <div>
-            <input type="number" name="page_box" class="form-control"><button class="btn btn-primary">GO</button>
-        </div>
-        <div class="form-group">
-            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{ $search }}">
-            <button class="btn btn-primary">Search</button>
-            <a href="{{ url('/admin/dashboard/category') }}">
-                <button type="button" class="btn btn-primary">Reset</button>
-            </a>
-        </div>
-    </form>
 
 
-    <table class="table" id="table">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <table id="zero_configuration_table" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Category Image</th>
+                                <th>Category Name</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- <table class="table" id="table">
         <thead>
         <tr>
             <th>No</th>
@@ -72,7 +83,42 @@
     <div>
         Showing {{$categories->firstItem()}} - {{$categories->lastItem()}} of {{$categories->total()}}
     </div>
-    {{$categories->links()}}
+    {{$categories->links()}} --}}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            dtable = $('#zero_configuration_table').DataTable({
+                "language": {
+                    "lengthMenu": "_MENU_"
+                },
+                "columnDefs": [{
+                    "targets": "_all",
+                    "orderable": false
+                }],
+                responsive: true,
+                'serverSide': true,
+                "ajax": {
+                    "url": "{{ route('category.getCategory') }}",
+                    "type": "POST",
+                    "data": function(data) {
+                        data._token = $('meta[name="csrf-token"]').attr('content');
+                        // Add any additional data parameters as needed
+                    },
+                    "error": function(xhr, error, thrown) {
+                        console.log("Ajax error:", thrown);
+                    }
+                }
+            });
+
+            $('.panel-ctrls').append("<i class='separator'></i>");
+
+            $('.panel-footer').append($(".dataTable+.row"));
+            $('.dataTables_paginate>ul.pagination').addClass("pull-right");
+
+            $("#apply_filter_btn").click(function() {
+                dtable.ajax.reload(null, false);
+            });
+        });
+    </script>
 
 
 @endsection

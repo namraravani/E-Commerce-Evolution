@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
@@ -35,11 +36,48 @@ class UserController extends Controller
         return view('user.create');
     }
 
-    public function profile_view() {
+    public function profile_view(User $user) {
+        $user = User::where('id',session('id'))->first();
 
-        return view('profile.profile');
+
+        return view('profile.profile',compact('user'));
 
     }
+
+    public function edit_profile(Request $req)
+    {
+        $user = DB::table('users')->where('id',session('id'))->value('first_name','last_name','email');
+
+        $user = [
+            'first_name' => $req->first_name,
+            'last_name' => $req->last_name,
+            'email' => $req->email,
+        ];
+
+        DB::table('users')
+            ->where('id', session('id'))
+            ->update($user);
+
+            return redirect()->route('profile_view')
+                             ->with('success','user created successfully.');
+
+    }
+
+    // public function edit_password(Request $req)
+    // {
+    //     $user_password = DB::table('users')->where('id',session('id'))->value('password');
+    //     $input = $req->all();
+
+    //     dd($input);
+    // }
+
+    
+
+
+
+
+
+
 
 
     public function store(Request $request)
@@ -92,7 +130,7 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('user.index')
-            ->with('success', 'user updated successfully.');
+                         ->with('success', 'user updated successfully.');
     }
 
 
@@ -103,12 +141,4 @@ class UserController extends Controller
         return redirect()->route('user.index')
                         ->with('success','user deleted successfully');
     }
-
-
-
-
-
-
-
-
 }

@@ -34,19 +34,62 @@ class CategoryController extends Controller
         ->with('i', ($categories->currentPage() - 1) * 5);
 }
 
-    // public function records(Request $request){
-    //     if($request->ajax()){
-    //         $category = Category::all();
 
-    //         return response()->json([
-    //             'category' => $category
-    //         ]);
-    //     }
-    //     else
-    //     {
-    //         abort(403);
-    //     }
-    // }
+public function getCategory(Request $request)
+{
+    // Read value
+    $draw = $request->input('draw');
+    $start = $request->input('start');
+    $length = $request->input('length');
+
+    $searchValue = $request->input('search.value');
+
+    // Total records
+    $totalRecords = Category::count();
+
+    // Apply search filter
+    $filteredRecords = Category::where('name', 'like', '%' . $searchValue . '%')
+        ->count();
+
+    // Fetch records with pagination and search
+    $records = Category::where('name', 'like', '%' . $searchValue . '%')
+        ->orderBy('id', 'desc')
+        ->skip($start)
+        ->take($length)
+        ->get();
+
+    $data = [];
+    $counter = $start + 1;
+
+    foreach ($records as $record) {
+        $status = $record->status == '1' ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>';
+
+        $row = [
+            $counter,
+            'No Image',
+            $record->name,
+            $status,
+            // Add your action buttons HTML here
+            '<a href="' . route('category.edit', $record->id) . '" class="btn"><i class="fa-solid fa-pen"></i></a>&nbsp;' .
+        '<a href="' . route('category.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
+        '<a data-id="' . $record->id . '" href="' . route('category.destroy', $record->id) . '" class="btn"><i class="fa-solid fa-trash-can"></i></a>'
+        ];
+
+        $data[] = $row;
+        $counter++;
+    }
+
+    $response = [
+        'draw' => intval($draw),
+        'recordsTotal' => $totalRecords,
+        'recordsFiltered' => $filteredRecords,
+        'data' => $data,
+    ];
+
+    return response()->json($response);
+}
+
+
 
 
 

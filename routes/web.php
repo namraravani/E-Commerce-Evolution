@@ -35,6 +35,10 @@ Route::post('/admin/register',[AuthController::class,'validateform_register'])->
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::resource('/admin/dashboard/category', CategoryController::class);
+Route::post('/admin/dashboard/category', [CategoryController::class,'getCategory'])->name('category.getCategory');
+
+
+
 
 Route::resource('/admin/dashboard/user', UserController::class);
 // Route::get('/admin/dashboard/user',[UserController::class,'index']);
@@ -55,20 +59,7 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 
 
 // profile route
-Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view']);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view'])->name('profile_view');
+Route::post('/dashboard/edit-profile', [UserController::class, 'edit_profile'])->name('edit_profile');
+Route::post('/dashboard/edit-password', [UserController::class, 'edit_password'])->name('edit_password');
 
