@@ -24,31 +24,45 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-
+// Auth-Routes
 Route::get('/admin/login', [AuthController::class,'login']);
 Route::get('/admin/dashboard', [AuthController::class,'dashboard'])->name('dashboard');
 Route::get('/admin/register', [AuthController::class,'register']);
-
-
 Route::post('/admin/login',[AuthController::class,'validateform'])->name('validateform');
 Route::post('/admin/register',[AuthController::class,'validateform_register'])->name('validateform_register');
 Route::get('/admin/logout',[AuthController::class,'logout'])->name('logout');
 
-Route::resource('/admin/dashboard/category', CategoryController::class);
-Route::post('/admin/dashboard/category', [CategoryController::class,'getCategory'])->name('category.getCategory');
+
+// Category-Routes
+Route::prefix('/admin/dashboard/category')->group(function () {
+    Route::get('', [CategoryController::class, 'index'])->name('category.index');
+    Route::get('/create', [CategoryController::class, 'create'])->name('category.create');
+    Route::post('', [CategoryController::class, 'store'])->name('category.store');
+    Route::get('/{category}', [CategoryController::class, 'show'])->name('category.show');
+    Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
+    Route::put('/{category}', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    Route::post('', [CategoryController::class,'getCategory'])->name('category.getCategory');
+});
 
 
+//customer-Routes
+Route::post('admin/dashboard/fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
+Route::post('admin/dashboard/fetchcity', [CustomerController::class,'fetchcity'])->name('fetchcity');
+Route::prefix('/admin/dashboard/customer')->group(function () {
+    Route::get('', [CustomerController::class, 'index'])->name('customer.index');
+    Route::get('/create', [CustomerController::class, 'create'])->name('customer.create');
+    Route::post('', [CustomerController::class, 'store'])->name('customer.store');
+    Route::get('/{customer}', [CustomerController::class,'show'])->name('customer.show');
+    Route::get('/{customer}/edit', [CustomerController::class,'edit'])->name('customer.edit');
+    Route::put('/{customer}', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+    Route::post('', [CustomerController::class,'getCustomer'])->name('customer.getCustomer');
+});
 
-
+//user-routes
 Route::resource('/admin/dashboard/user', UserController::class);
-// Route::get('/admin/dashboard/user',[UserController::class,'index']);
-Route::post('fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
-Route::post('fetchcity', [CustomerController::class,'fetchcity'])->name('fetchcity');;
-
-Route::resource('/admin/dashboard/customer', CustomerController::class);
-
-Route::delete('category/{id}/delete-image', 'CategoryController@deleteImage')->name('category.deleteImage');
-
+Route::post('/admin/dashboard/user', [UserController::class,'getUser'])->name('user.getUser');
 
 
 //password resets
@@ -61,5 +75,8 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 // profile route
 Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view'])->name('profile_view');
 Route::post('/dashboard/edit-profile', [UserController::class, 'edit_profile'])->name('edit_profile');
-Route::post('/dashboard/edit-password', [UserController::class, 'edit_password'])->name('edit_password');
+// Route::post('/dashboard/edit-profile', [UserController::class, 'edit_password'])->name('edit_password');
+
+
+
 

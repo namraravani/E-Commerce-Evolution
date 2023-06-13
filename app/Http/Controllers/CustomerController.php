@@ -14,22 +14,88 @@ use App\Models\{Country,State,City};
 class CustomerController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
 {
-    $search = $request->input('search');
+    // $page_box = $request->input('page_box');
+
 
     $query = Customer::query();
 
-    if ($search) {
-        $query->where('name', 'LIKE', "%$search%");
-    }
+
 
     $customers = $query->latest()->paginate(5);
-
     Paginator::useBootstrap();
 
-    return view('customer.index', compact('customers', 'search'))
-        ->with('i', (request()->input('page', 1) - 1) * 5);
+    return view('customer.index', compact('customers'))
+        ->with('i', ($customers->currentPage() - 1) * 5);
+}
+
+public function getCustomer(Request $request)
+{
+
+
+    // Read value
+    $draw = $request->input('draw');
+    $start = $request->input('start');
+    $length = $request->input('length');
+
+    $searchValue = $request->input('search.value');
+
+    // Total records
+    $totalRecords = Customer::count();
+
+    // Apply search filter
+    $filteredRecords = Customer::where('first_name', 'like', '%' . $searchValue . '%')
+        ->count();
+
+    // Fetch records with pagination and search
+    $records = Customer::where('first_name', 'like', '%' . $searchValue . '%')
+        ->orderBy('id', 'desc')
+        ->skip($start)
+        ->take($length)
+        ->get();
+
+    $data = [];
+    $counter = $start + 1;
+
+    foreach ($records as $record) {
+
+
+        $row = [
+            $counter,
+            $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Category Image" width="100">' : 'No Image',
+    $record->first_name,
+    $record->last_name,
+    $record->email,
+    $record->mobileno,
+    $record->address,
+    $record->country,
+    $record->state,
+    $record->city,
+    $record->pincode,
+            '<a href="' . route('customer.edit', $record->id) . '" class="btn"><i class="fa-regular fa-pen-to-square"></i></a>&nbsp;' .
+            '<a href="' . route('customer.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
+            '<form action="' . route('customer.destroy', $record->id) . '" method="POST" style="display:inline">
+                ' . csrf_field() . '
+                ' . method_field('DELETE') . '
+                <button type="submit" class="btn"><i class="fa-solid fa-trash-can"></i></button>
+            </form>'
+
+
+        ];
+
+        $data[] = $row;
+        $counter++;
+    }
+
+    $response = [
+        'draw' => intval($draw),
+        'recordsTotal' => $totalRecords,
+        'recordsFiltered' => $filteredRecords,
+        'data' => $data,
+    ];
+
+    return response()->json($response);
 }
 
 

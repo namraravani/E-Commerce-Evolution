@@ -18,55 +18,61 @@
         </div>
     @endif
 
-    <form action="{{ route('user.index') }}" method="GET">
-        <div class="form-group">
-            <input type="text" name="search" id="" class="form-control" placeholder="Search by name" value="{{ $search }}">
-            <button class="btn btn-primary">Search</button>
-            <a href="{{ url('/user') }}">
-                <button type="button" class="btn btn-primary">Reset</button>
-            </a>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <table id="zero_configuration_table" class="table table-hover" style=width:100%>
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>image</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            dtable = $('#zero_configuration_table').DataTable({
+                "language": {
+                    "lengthMenu": "_MENU_"
+                },
+                "columnDefs": [{
+                    "targets": "_all",
+                    "orderable": false
+                }],
+                responsive: true,
+                'serverSide': true,
+                "ajax": {
+                    "url": "{{ route('user.getUser') }}",
+                    "type": "POST",
+                    "data": function(data) {
+                        data._token = $('meta[name="csrf-token"]').attr('content');
 
-    <table class="table" id="table">
-        <thead>
-        <tr>
-            <th>No</th>
-            <th>first_name</th>
-            <th>last_name</th>
-            <th>email</th>
-            <th width="200px">Action</th>
-        </tr>
-        </thead>
+                    },
 
-            <tbody>
-                @foreach($users as $user)
-                <tr class="user{{$user->id}}">
-                    <td>{{++$i}}</td>
-                    <td>{{$user->first_name}}</td>
-                    <td>{{$user->last_name}}</td>
-                    <td>{{$user->email}}</td>
+                }
+            });
 
+            $('.panel-ctrls').append("<i class='separator'></i>");
 
-                    <td>
-                        <form action="{{ route('user.destroy',$user->id) }}" method="POST">
+            $('.panel-footer').append($(".dataTable+.row"));
+            $('.dataTables_paginate>ul.pagination').addClass("pull-right");
 
-                            <a class="btn btn-info" href="{{ route('user.show',$user->id) }}"><i class="fa-solid fa-eye"></i> </a>
+            $("#apply_filter_btn").click(function() {
+                dtable.ajax.reload(null, false);
+            });
+        });
 
-                            <a class="btn btn-primary" href="{{ route('user.edit',$user->id) }}"><i class="fa-solid fa-pen"></i></a>
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-                </tbody>
-
-
-    </table>
-    {!!$users->links()!!}
+</script>
 
 @endsection

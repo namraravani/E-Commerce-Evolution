@@ -20,7 +20,13 @@
 					<div class="p-4">
 						<div class="img-circle text-center mb-3">
 							<div class="profile-image">
-                                <span>{{ substr(session('user'), 0, 1) }}</span>
+                                @if ($user->image)
+    <div class="profile-image">
+        <span><img src="/{{ $user->image }}" width="50px"></span>
+    </div>
+@else
+    <div>{{ substr(session('user'), 0, 1) }}</div>
+@endif
                             </div>
 						</div>
 						<h4 class="text-center">{{session('user')}}</h4>
@@ -43,6 +49,14 @@
                         <form id="editProfileForm" action="{{ route('edit_profile') }}" method="POST" enctype="multipart/form-data">
 
                         @csrf
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <strong>Image:</strong>
+                                <input type="file" name="image" class="form-control" placeholder="Image">
+                                <img src="/{{ $user->image }}" width="200px">
+                                <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
+                            </div>
+                        </div>
 
 						<div class="row">
 							<div class="col-md-6">
@@ -73,15 +87,26 @@
                     </form>
 					</div>
 					<div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 						<h3 class="mb-4">Password Settings</h3>
                     <form action="{{route('edit_password')}}" method="POST">
                     @csrf
-                    
+
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Old password</label>
-								  	<input type="password" name="old_password" class="form-control">
+								  	<input type="password" name="old_password" id="old_password" class="form-control">
+
 								</div>
 							</div>
 						</div>
@@ -89,18 +114,20 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>New password</label>
-								  	<input type="password" name="new_password" class="form-control">
+								  	<input type="password" name="new_password" id="new_password" class="form-control">
+
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Confirm new password</label>
-								  	<input type="password" name="confirm_password" class="form-control">
+								  	<input type="password" name="confirm_password" id="confirm_password" class="form-control">
+
 								</div>
 							</div>
 						</div>
 						<div>
-							<button class="btn btn-primary">Update</button>
+							<button class="btn btn-primary" onclick="check_method()">Update</button>
 							{{-- <button class="btn btn-light">Cancel</button> --}}
 						</div>
                     </form>
@@ -127,5 +154,7 @@
       });
     });
   </script>
+
+
 
 </html>

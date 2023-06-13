@@ -19,18 +19,16 @@ class CategoryController extends Controller
     public function index(Request $request)
 {
     // $page_box = $request->input('page_box');
-    $search = $request->input('search');
+
 
     $query = Category::query();
 
-    if ($search) {
-        $query->where('name', 'LIKE', "%$search%");
-    }
+
 
     $categories = $query->latest()->paginate(5);
     Paginator::useBootstrap();
 
-    return view('category.index', compact('categories', 'search'))
+    return view('category.index', compact('categories'))
         ->with('i', ($categories->currentPage() - 1) * 5);
 }
 
@@ -66,13 +64,21 @@ public function getCategory(Request $request)
 
         $row = [
             $counter,
-            'No Image',
+            $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Category Image" width="100">' : 'No Image',
             $record->name,
             $status,
-            // Add your action buttons HTML here
-            '<a href="' . route('category.edit', $record->id) . '" class="btn"><i class="fa-solid fa-pen"></i></a>&nbsp;' .
-        '<a href="' . route('category.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
-        '<a data-id="' . $record->id . '" href="' . route('category.destroy', $record->id) . '" class="btn"><i class="fa-solid fa-trash-can"></i></a>'
+
+            '<a href="' . route('category.edit', $record->id) . '" class="btn"><i class="fa-regular fa-pen-to-square"></i></a>&nbsp;' .
+            '<a href="' . route('category.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
+            '<form action="' . route('category.destroy', $record->id) . '" method="POST" style="display:inline">
+                ' . csrf_field() . '
+                ' . method_field('DELETE') . '
+                <button type="submit" class="btn"><i class="fa-solid fa-trash-can"></i></button>
+            </form>'
+
+
+
+
         ];
 
         $data[] = $row;

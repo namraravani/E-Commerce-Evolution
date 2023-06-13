@@ -15,6 +15,13 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
+                <strong>Image:</strong>
+                <img src="/{{ $user->image }}" width="500px">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
                 <strong>first_name:</strong>
                 {{ $user->first_name }}
             </div>
@@ -31,7 +38,7 @@
                 {{ $user->email }}
             </div>
         </div>
-        
+
 
     </div>
 @endsection

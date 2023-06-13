@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-body">
 
-                    <table id="zero_configuration_table" class="table table-striped" style="width:100%">
+                    <table id="zero_configuration_table" class="table table-hover" style=width:100%">
                         <thead>
                             <tr>
                                 <th>id</th>
@@ -41,49 +41,6 @@
             </div>
         </div>
     </div>
-
-
-    {{-- <table class="table" id="table">
-        <thead>
-        <tr>
-            <th>No</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th width="200px">Action</th>
-        </tr>
-        </thead>
-
-            <tbody>
-                @foreach($categories as $category)
-                <tr class="category{{$category->id}}">
-                    <td>{{++$i}}</td>
-                    <td><img src="/{{$category->image}}" width="100px"></td>
-                    <td>{{$category->name}}</td>
-                    <td>{{ $category->status == 1 ? 'Active' : 'InActive' }}</td>
-
-                    <td>
-                        <form action="{{ route('category.destroy',$category->id) }}" method="POST">
-
-                            <a class="btn btn-info" href="{{ route('category.show',$category->id) }}"><i class="fa-solid fa-eye"></i> </a>
-
-                            <a class="btn btn-primary" href="{{ route('category.edit',$category->id) }}"><i class="fa-solid fa-pen"></i></a>
-
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="submit" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-                </tbody>
-
-    </table>
-    <div>
-        Showing {{$categories->firstItem()}} - {{$categories->lastItem()}} of {{$categories->total()}}
-    </div>
-    {{$categories->links()}} --}}
     <script type="text/javascript">
         $(document).ready(function() {
             dtable = $('#zero_configuration_table').DataTable({
@@ -118,7 +75,9 @@
                 dtable.ajax.reload(null, false);
             });
         });
-    </script>
+
+</script>
+
 
 
 @endsection
