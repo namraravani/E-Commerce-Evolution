@@ -24,7 +24,7 @@ class CustomerController extends Controller
 
 
     $customers = $query->latest()->paginate(5);
-    Paginator::useBootstrap();
+
 
     return view('customer.index', compact('customers'))
         ->with('i', ($customers->currentPage() - 1) * 5);
@@ -64,15 +64,15 @@ public function getCustomer(Request $request)
         $row = [
             $counter,
             $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Category Image" width="100">' : 'No Image',
-    $record->first_name,
-    $record->last_name,
-    $record->email,
-    $record->mobileno,
-    $record->address,
-    $record->country,
-    $record->state,
-    $record->city,
-    $record->pincode,
+            $record->first_name,
+            $record->last_name,
+            $record->email,
+            $record->mobileno,
+            $record->address,
+            $record->country,
+            $record->state,
+            $record->city,
+            $record->pincode,
             '<a href="' . route('customer.edit', $record->id) . '" class="btn"><i class="fa-regular fa-pen-to-square"></i></a>&nbsp;' .
             '<a href="' . route('customer.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
             '<form action="' . route('customer.destroy', $record->id) . '" method="POST" style="display:inline">

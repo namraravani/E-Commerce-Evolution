@@ -42,13 +42,14 @@ Route::prefix('/admin/dashboard/category')->group(function () {
     Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
     Route::put('/{category}', [CategoryController::class, 'update'])->name('category.update');
     Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
-    Route::post('', [CategoryController::class,'getCategory'])->name('category.getCategory');
+    Route::post('/get', [CategoryController::class,'getCategory'])->name('category.getCategory');
 });
 
 
+
+
 //customer-Routes
-Route::post('admin/dashboard/fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
-Route::post('admin/dashboard/fetchcity', [CustomerController::class,'fetchcity'])->name('fetchcity');
+
 Route::prefix('/admin/dashboard/customer')->group(function () {
     Route::get('', [CustomerController::class, 'index'])->name('customer.index');
     Route::get('/create', [CustomerController::class, 'create'])->name('customer.create');
@@ -57,12 +58,16 @@ Route::prefix('/admin/dashboard/customer')->group(function () {
     Route::get('/{customer}/edit', [CustomerController::class,'edit'])->name('customer.edit');
     Route::put('/{customer}', [CustomerController::class, 'update'])->name('customer.update');
     Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
-    Route::post('', [CustomerController::class,'getCustomer'])->name('customer.getCustomer');
+    Route::post('/get', [CustomerController::class,'getCustomer'])->name('customer.getCustomer');
 });
+// Route::resource('/admin/dashboard/customer', CustomerController::class);
+Route::post('admin/dashboard/fetchstate', [CustomerController::class,'fetchstate'])->name('fetchstate');
+Route::post('admin/dashboard/fetchcity', [CustomerController::class,'fetchcity'])->name('fetchcity');
 
 //user-routes
+
 Route::resource('/admin/dashboard/user', UserController::class);
-Route::post('/admin/dashboard/user', [UserController::class,'getUser'])->name('user.getUser');
+Route::post('/admin/dashboard/user/get', [UserController::class,'getUser'])->name('user.getUser');
 
 
 //password resets
@@ -75,7 +80,7 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 // profile route
 Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view'])->name('profile_view');
 Route::post('/dashboard/edit-profile', [UserController::class, 'edit_profile'])->name('edit_profile');
-// Route::post('/dashboard/edit-profile', [UserController::class, 'edit_password'])->name('edit_password');
+Route::post('/dashboard/edit-password', [UserController::class, 'edit_password'])->name('edit_password');
 
 
 

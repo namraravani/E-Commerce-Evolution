@@ -1,3 +1,4 @@
+
 <style>
     .profile-image {
   display: inline-block;
@@ -39,11 +40,11 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="profile-image">
                 <span>
-                    {{-- @if ($user->image)
+                    {{-- @if ($user && $user->image)
                         <div class="profile-image">
                             <span><img src="/{{ $user->image }}" width="50px"></span>
                         </div>
-                    @else --}}
+                    @elseif ($user) --}}
                         <div>{{ substr(session('user'), 0, 1) }}</div>
                     {{-- @endif --}}
                 </span>

@@ -10,6 +10,12 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<link rel="stylesheet" type="text/css" href={{ asset('profile/css/styles.css')}}>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<section class="py-5 my-5">
@@ -21,12 +27,12 @@
 						<div class="img-circle text-center mb-3">
 							<div class="profile-image">
                                 @if ($user->image)
-    <div class="profile-image">
-        <span><img src="/{{ $user->image }}" width="50px"></span>
-    </div>
-@else
-    <div>{{ substr(session('user'), 0, 1) }}</div>
-@endif
+                                <div class="profile-image">
+                                    <span><img src="/{{ $user->image }}" width="50px"></span>
+                                </div>
+                            @else
+                                <div>{{ substr(session('user'), 0, 1) }}</div>
+                            @endif
                             </div>
 						</div>
 						<h4 class="text-center">{{session('user')}}</h4>
@@ -47,7 +53,6 @@
 					<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
 						<h3 class="mb-4">Account Settings</h3>
                         <form id="editProfileForm" action="{{ route('edit_profile') }}" method="POST" enctype="multipart/form-data">
-
                         @csrf
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
@@ -98,7 +103,7 @@
                             </div>
                         @endif
 						<h3 class="mb-4">Password Settings</h3>
-                    <form action="{{route('edit_password')}}" method="POST">
+                    <form id = "editPasswordForm" action="{{ route('edit_password') }}" method="POST">
                     @csrf
 
 						<div class="row">
@@ -127,7 +132,7 @@
 							</div>
 						</div>
 						<div>
-							<button class="btn btn-primary" onclick="check_method()">Update</button>
+							<button class="btn btn-primary">Update</button>
 							{{-- <button class="btn btn-light">Cancel</button> --}}
 						</div>
                     </form>
@@ -140,6 +145,7 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     @endsection
 </body>
 
@@ -153,7 +159,19 @@
         }
       });
     });
-  </script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('submit', function (event) {
+        if (event.target.id === 'editPasswordForm') {
+          event.preventDefault(); // Prevent form submission
+          swal("Updated!", "Profile has been successfully updated.", "success");
+          event.target.submit(); // Submit the form programmatically
+        }
+      });
+    });
+
+
+</script>
 
 
 

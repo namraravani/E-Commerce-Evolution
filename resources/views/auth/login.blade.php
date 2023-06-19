@@ -91,7 +91,7 @@
                         type:"POST",
                         data:{_token:_token,email:email,password:password},
                         success:function(data){
-                            console.log(data);
+                            
                             if($.isEmptyObject(data.error)){
                                 if((data.success)){
                                 $('.email_err').text('');

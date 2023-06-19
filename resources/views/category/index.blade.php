@@ -58,7 +58,7 @@
                     "type": "POST",
                     "data": function(data) {
                         data._token = $('meta[name="csrf-token"]').attr('content');
-                        // Add any additional data parameters as needed
+                        
                     },
                     "error": function(xhr, error, thrown) {
                         console.log("Ajax error:", thrown);

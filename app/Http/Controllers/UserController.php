@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -66,9 +67,9 @@ class UserController extends Controller
         $row = [
             $counter,
             $image = $record->image ? '<img src="' . asset($record->image) . '" alt="User Image" width="100">' : 'No Image',
-    $record->first_name,
-    $record->last_name,
-    $record->email,
+            $record->first_name,
+            $record->last_name,
+            $record->email,
 
             '<a href="' . route('user.edit', $record->id) . '" class="btn"><i class="fa-regular fa-pen-to-square"></i></a>&nbsp;' .
             '<a href="' . route('user.show', $record->id) . '" class="btn"><i class="fa-solid fa-eye"></i></a>&nbsp;' .
@@ -103,8 +104,6 @@ class UserController extends Controller
 
     public function profile_view(User $user) {
         $user = User::where('id',session('id'))->first();
-
-
         return view('profile.profile',compact('user'));
 
     }
@@ -112,6 +111,9 @@ class UserController extends Controller
     public function edit_profile(Request $request)
 {
     $user = DB::table('users')->where('id', session('id'))->first();
+    
+
+
 
     $userData = [
         'first_name' => $request->first_name,
@@ -132,12 +134,15 @@ class UserController extends Controller
         }
 
         $userData['image'] = $path;
+
     } elseif ($request->has('delete_image')) {
         if ($previousImage) {
             File::delete(public_path($previousImage));
         }
         $userData['image'] = null;
     }
+
+
 
     DB::table('users')
         ->where('id', session('id'))
@@ -147,7 +152,7 @@ class UserController extends Controller
         ->with('success', 'Profile updated successfully.');
 }
 
-public function edit_password(request $request){
+public function edit_password(request $request, User $user){
 
 
     $request->validate([
@@ -155,6 +160,30 @@ public function edit_password(request $request){
         'new_password' => ['required', 'string', Password::min(8)->letters()->numbers()->mixedCase()->symbols()],
         'confirm_password' => 'required|same:new_password',
     ]);
+
+    $user = DB::table('users')->where('id', session('id'))->first();
+
+    if($request->old_password !== $user->password)
+    {
+        return response()->json(['error'=> 'OOPS']);
+    }
+
+    if($request->old_password == $request->new_password)
+    {
+        return response()->json(['error'=> 'Oops, old password and new password cant be the same']);
+    }
+
+    $user = [
+        'password'=> $request->new_password,
+    ];
+
+    DB::table('users')
+        ->where('id', session('id'))
+        ->update($user);
+
+
+        return redirect()->route('profile_view')
+        ->with('success', 'Profile updated successfully.');
 
 
 

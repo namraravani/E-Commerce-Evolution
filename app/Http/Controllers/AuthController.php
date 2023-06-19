@@ -22,13 +22,13 @@ class AuthController extends Controller
 
     public function register() {
 
-            return view('auth.register');
+        return view('auth.register');
 
     }
 
     public function dashboard() {
 
-            return view('dashboard');
+        return view('dashboard');
 
 
     }
@@ -45,14 +45,19 @@ class AuthController extends Controller
 
         ]);
 
+
+
         if($validator->passes())
         {
             $user = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('email','password');
 
+
             if($user)
             {
+
                 $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
                 $hello1 = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
+
                 Session::put('user',$hello);
                 Session::put('id',$hello1);
                 return response()->json(['success'=>'New Account Created Succesfully']);

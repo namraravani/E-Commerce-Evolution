@@ -40,6 +40,8 @@
             </div>
         </div>
     </div>
+
+    
     <script type="text/javascript">
         $(document).ready(function() {
             dtable = $('#zero_configuration_table').DataTable({
