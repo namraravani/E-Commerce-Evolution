@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -111,7 +112,7 @@ class UserController extends Controller
     public function edit_profile(Request $request)
 {
     $user = DB::table('users')->where('id', session('id'))->first();
-    
+
 
 
 

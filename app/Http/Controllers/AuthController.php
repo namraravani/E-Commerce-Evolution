@@ -8,6 +8,7 @@ use Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Debug\Dumper;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\RedirectResponse;
 
@@ -38,34 +39,47 @@ class AuthController extends Controller
 
     public function validateform(Request $req)
     {
-        $validator = Validator::make($req->all(),[
 
-          'email' => 'required|email',
-          'password' => ['required',]
-
-        ]);
-
-
-
-        if($validator->passes())
+        if(Auth::attempt($req->only('email','password')))
         {
-            $user = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('email','password');
+            $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
+            $take_id = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
+            Session::put('id',$take_id);
+            Session::put('user',$hello);
+            return response()->json(['success'=>'Logedin Successfully']);
 
-
-            if($user)
-            {
-
-                $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
-                $hello1 = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
-
-                Session::put('user',$hello);
-                Session::put('id',$hello1);
-                return response()->json(['success'=>'New Account Created Succesfully']);
-            }
-            return response()->json(['failed'=>'Oops it seems like you dont have account or invalid username or password']);
 
         }
-        return response()->json(['error'=>$validator->errors()]);
+
+        return response()->json(['failed'=>'Oops,it seems like you dont have account or ivalid username or password']);
+        // $validator = Validator::make($req->all(),[
+
+        //   'email' => 'required|email',
+        //   'password' => ['required',]
+
+        // ]);
+
+
+
+        // if($validator->passes())
+        // {
+        //     $user = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('email','password');
+
+
+        //     if($user)
+        //     {
+
+        //         $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
+        //         $hello1 = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
+
+        //         Session::put('user',$hello);
+        //         Session::put('id',$hello1);
+        //         return response()->json(['success'=>'New Account Created Succesfully']);
+        //     }
+        //     return response()->json(['failed'=>'Oops it seems like you dont have account or invalid username or password']);
+
+        // }
+        // return response()->json(['error'=>$validator->errors()]);
 
     }
 
@@ -88,7 +102,7 @@ class AuthController extends Controller
             'first_name' => $req->first_name,
             'last_name' => $req->last_name,
             'email' => $req->register_email,
-            'password' => $req->register_password
+            'password' => Hash::make($req->register_password)
         ]);
         return response()->json(['success' => 'New Account Create Successfully']);
     }
@@ -103,12 +117,6 @@ class AuthController extends Controller
         return redirect('/admin/login');
 
     }
-
-
-
-
-
-
 
 }
 
