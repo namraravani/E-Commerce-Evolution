@@ -26,16 +26,16 @@
 					<div class="p-4">
 						<div class="img-circle text-center mb-3">
 							<div class="profile-image">
-                                @if ($user->image)
+                                @if (Auth::user()->image)
                                 <div class="profile-image">
-                                    <span><img src="/{{ $user->image }}" width="50px"></span>
+                                    <span><img src="/{{ Auth::user()->image }}" width="50px"></span>
                                 </div>
                             @else
-                                <div>{{ substr(session('user'), 0, 1) }}</div>
+                                <div>{{ substr(Auth::user()->first_name, 0, 1) }}</div>
                             @endif
                             </div>
 						</div>
-						<h4 class="text-center">{{session('user')}}</h4>
+						<h4 class="text-center">{{Auth::user()->first_name}}</h4>
 					</div>
 					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 						<a class="nav-link active" id="account-tab" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">
@@ -58,7 +58,7 @@
                             <div class="form-group">
                                 <strong>Image:</strong>
                                 <input type="file" name="image" class="form-control" placeholder="Image">
-                                <img src="/{{ $user->image }}" width="200px">
+                                <img src="/{{ Auth::user()->image }}" width="200px">
                                 <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
                             </div>
                         </div>
@@ -67,19 +67,19 @@
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>First Name</label>
-								  	<input type="text" name="first_name" class="form-control" value={{$user->first_name}} >
+								  	<input type="text" name="first_name" class="form-control" value={{Auth::user()->first_name}} >
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Last Name</label>
-								  	<input type="text" name="last_name" class="form-control" value={{$user->last_name}} >
+								  	<input type="text" name="last_name" class="form-control" value={{Auth::user()->last_name}} >
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 								  	<label>Email</label>
-								  	<input type="text" name="email" class="form-control" value={{$user->email}} >
+								  	<input type="text" name="email" class="form-control" value={{Auth::user()->email}} >
 								</div>
 							</div>
 
@@ -153,9 +153,9 @@
     document.addEventListener('DOMContentLoaded', function () {
       document.addEventListener('submit', function (event) {
         if (event.target.id === 'editProfileForm') {
-          event.preventDefault(); // Prevent form submission
+          event.preventDefault();
           swal("Updated!", "Profile has been successfully updated.", "success");
-          event.target.submit(); // Submit the form programmatically
+          event.target.submit();
         }
       });
     });
@@ -163,9 +163,9 @@
     document.addEventListener('DOMContentLoaded', function () {
       document.addEventListener('submit', function (event) {
         if (event.target.id === 'editPasswordForm') {
-          event.preventDefault(); // Prevent form submission
+          event.preventDefault();
           swal("Updated!", "Profile has been successfully updated.", "success");
-          event.target.submit(); // Submit the form programmatically
+          event.target.submit(); 
         }
       });
     });

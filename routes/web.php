@@ -2,13 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\ProductController;
 
 
 
@@ -68,6 +67,10 @@ Route::post('admin/dashboard/fetchcity', [CustomerController::class,'fetchcity']
 
 Route::resource('/admin/dashboard/user', UserController::class);
 Route::post('/admin/dashboard/user/get', [UserController::class,'getUser'])->name('user.getUser');
+
+Route::resource('admin/dashboard/product', ProductController::class);
+Route::post('/admin/dashboard/product/get', [ProductController::class,'getProduct'])->name('product.getProduct');
+// Route::view('/admin/dashboard/product', [ProductController::class,'index'])->name('');
 
 
 //password resets

@@ -18,15 +18,10 @@ class CategoryController extends Controller
 
     public function index(Request $request)
 {
-    // $page_box = $request->input('page_box');
-
-
     $query = Category::query();
-
-
-
     $categories = $query->latest()->paginate(5);
     Paginator::useBootstrap();
+
 
     return view('category.index', compact('categories'))
         ->with('i', ($categories->currentPage() - 1) * 5);
@@ -60,7 +55,7 @@ public function getCategory(Request $request)
     $counter = $start + 1;
 
     foreach ($records as $record) {
-        $status = $record->status == '1' ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>';
+        $status = $record->status == "1" ? '<span class="badge rounded-pill text-success bg-success text-light">Active</span>' : '<span class="badge rounded-pill text-danger bg-danger text-light">Inactive</span>';
 
         $row = [
             $counter,

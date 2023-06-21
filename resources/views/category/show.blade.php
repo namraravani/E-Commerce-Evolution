@@ -22,7 +22,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>status:</strong>
-                {{ $category->status == 1 ? 'Active' : 'InActive' }}
+                {{ $category->status == "1" ? 'Active' : 'InActive' }}
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">

@@ -42,16 +42,13 @@ class AuthController extends Controller
 
         if(Auth::attempt($req->only('email','password')))
         {
-            $hello = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('first_name');
-            $take_id = DB::table('users')->where('email',$req->email)->where('password',$req->password)->value('id');
-            Session::put('id',$take_id);
-            Session::put('user',$hello);
+
             return response()->json(['success'=>'Logedin Successfully']);
 
 
         }
 
-        return response()->json(['failed'=>'Oops,it seems like you dont have account or ivalid username or password']);
+        return response()->json(['failed'=>'Oops,it seems like you dont have account or invalid username or password']);
         // $validator = Validator::make($req->all(),[
 
         //   'email' => 'required|email',

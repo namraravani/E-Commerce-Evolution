@@ -1,8 +1,3 @@
-@if(session('user')!=NULL)
-{
-    <script>window.location.href = '/admin/dashboard'</script>
-}
-@endif
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -15,8 +10,7 @@
         <link href={{ asset('assests/css/styles.css') }} rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.j"></script>
-        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
     </head>
     <body class="bg-primary">
         <div id="layoutAuthentication">
@@ -91,18 +85,30 @@
                         type:"POST",
                         data:{_token:_token,email:email,password:password},
                         success:function(data){
-                            
+
                             if($.isEmptyObject(data.error)){
                                 if((data.success)){
                                 $('.email_err').text('');
                                 $('.password_err').text('');
+                                Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
                                 window.location.href = '/admin/dashboard';
+                            });
                                 }
-                                else if(alert(data.failed))
+                                else if((data.failed))
                                 {
                                     $('.email_err').text('');
                                     $('.password_err').text('');
-                                    window.location.href = '/admin/dashboard';
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Login Failed',
+                                        text: data.failed,
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
 
                             }

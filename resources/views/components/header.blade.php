@@ -38,15 +38,15 @@
 
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="profile-image">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true"><div class="profile-image">
                 <span>
-                    {{-- @if ($user && $user->image)
+                    @if (Auth::user()->image)
                         <div class="profile-image">
-                            <span><img src="/{{ $user->image }}" width="50px"></span>
+                            <span><img src="/{{ Auth::user()->image }}" width="50px"></span>
                         </div>
-                    @elseif ($user) --}}
-                        <div>{{ substr(session('user'), 0, 1) }}</div>
-                    {{-- @endif --}}
+                    @else
+                        <div>{{substr(Auth::user()->first_name,0,1)}}</div>
+                    @endif
                 </span>
             </div></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">

@@ -16,10 +16,9 @@
 
                 </a>
 
-                <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                <a class="nav-link collapsed" href="/admin/dashboard/product">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                     Product
-
                 </a>
 
 
