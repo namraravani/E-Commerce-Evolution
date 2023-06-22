@@ -47,8 +47,14 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <label for="image">Image:</label>
+                <label for="image">Thumbnail:</label>
                 <input type="file" name="image" class="form-control-file" id="image" accept="image/">
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group">
+                <label for="image">images:</label>
+                <input type="file" name="images[]" class="form-control-file" id="images" accept="image/" multiple>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">

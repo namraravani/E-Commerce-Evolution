@@ -86,5 +86,9 @@ Route::post('/dashboard/edit-profile', [UserController::class, 'edit_profile'])-
 Route::post('/dashboard/edit-password', [UserController::class, 'edit_password'])->name('edit_password');
 
 
+// Route::delete('/product/{productId}/image/{imageId}',[ProductController::class,'deleteImage'])->name('product.image.delete');
+// Route::delete('/product/{productId}/delete-thumbnail', 'ProductController@deleteThumbnail')->name('product.deleteThumbnail');
+
+
 
 

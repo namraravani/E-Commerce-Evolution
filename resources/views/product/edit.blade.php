@@ -51,9 +51,28 @@
                 <div class="form-group">
                     <strong>Image:</strong>
                     <input type="file" name="image" class="form-control" placeholder="Image">
-                    <img src="/{{ $product->image }}" width="300px">
-                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
+                    <form action="{{ route('product.deleteThumbnail', $product->id) }}" method="POST">
+                        <button class="btn text-danger">Delete Thumbnail</button>
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    <img src="/Product_thumbnails/{{ $product->image }}" width="200px">
                 </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    @foreach($productImages as $imageId => $image)
+                        <div class="image-container" style="position: relative; display: inline-block;">
+                            <form action="{{ route('product.image.delete', ['productId' => $product->id, 'imageId' => $imageId]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn text-danger">X</button>
+                            </form>
+                            <img src="{{ asset($image) }}" alt="Product Image" width="200px">
+                        </div>
+                    @endforeach
+                </div>
+            </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
@@ -88,8 +107,13 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <strong>Category name:</strong>
-                    <input type="text" name="category_id" value="{{ $product->category_id }}" class="form-control" placeholder="category_id">
+                    <label for="category_id">Category Name:</label>
+                    <select name="category_id" id="category-dropdown" class="form-control">
+                        <option >Select Category</option>
+                        @foreach($categories as $data)
+                            <option value="{{$data->id}}">{{$data->name}}</option>
+                         @endforeach
+                    </select>
                 </div>
             </div>
 
