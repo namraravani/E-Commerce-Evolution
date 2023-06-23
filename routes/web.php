@@ -84,10 +84,11 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 Route::get('/dashboard/edit-profile', [UserController::class, 'profile_view'])->name('profile_view');
 Route::post('/dashboard/edit-profile', [UserController::class, 'edit_profile'])->name('edit_profile');
 Route::post('/dashboard/edit-password', [UserController::class, 'edit_password'])->name('edit_password');
+Route::post('/deleteimage/{$image}',[ProductController::class,'deleteImages'])->name('other_images');
 
 
-// Route::delete('/product/{productId}/image/{imageId}',[ProductController::class,'deleteImage'])->name('product.image.delete');
-// Route::delete('/product/{productId}/delete-thumbnail', 'ProductController@deleteThumbnail')->name('product.deleteThumbnail');
+Route::delete('/deleteimage/{image}', [ProductController::class,'delete'])->name('delete.image');
+Route::post('/product/{productId}/image', [ProductController::class, 'storeImage'])->name('product.image.store');
 
 
 

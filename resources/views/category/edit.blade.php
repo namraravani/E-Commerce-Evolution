@@ -52,7 +52,7 @@
                 <div class="form-group">
                     <strong>Image:</strong>
                     <input type="file" name="image" class="form-control" placeholder="Image">
-                    <img src="/{{ $category->image }}" width="300px">
+                    <img src="{{asset('/Category_Images' . $category->image)}}" width="300px">
                     <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
                 </div>
             </div>

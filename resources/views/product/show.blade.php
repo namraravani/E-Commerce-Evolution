@@ -34,9 +34,15 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Image:</strong>
-                <img src="/{{ $product->image }}" width="500px">
+                <img src="{{asset('Product_thumbnails/' . $product->image)}}" width="200px">
             </div>
         </div>
+        <strong>Product Images:</strong>
+        @foreach($productImages as $image)
+            <div class="image-container">
+                <img src="{{ asset($image['image']) }}" id="other_image" alt="Product Image" width="200px">
+            </div>
+        @endforeach
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Price:</strong>
@@ -64,8 +70,8 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>category_id:</strong>
-                {{ $product->category_id }}
+                <strong>category Name:</strong>
+                {{ $product->category->name}}
             </div>
         </div>
 

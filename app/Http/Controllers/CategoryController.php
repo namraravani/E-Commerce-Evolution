@@ -56,10 +56,10 @@ public function getCategory(Request $request)
 
     foreach ($records as $record) {
         $status = $record->status == "1" ? '<span class="badge rounded-pill text-success bg-success text-light">Active</span>' : '<span class="badge rounded-pill text-danger bg-danger text-light">Inactive</span>';
-
+        $image = $record->image ? '<img src="' . asset('Category_Images/' . $record->image) . '" alt="Product Image" width="100">' : 'No Image';
         $row = [
             $counter,
-            $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Category Image" width="100">' : 'No Image',
+            $image,
             $record->name,
             $status,
 
@@ -108,17 +108,16 @@ public function getCategory(Request $request)
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $imagename= date('d-m-y')."-".$request->image->getClientOriginalName();
-        $PriorPath=('uploaded_images');
-        if(!$PriorPath){
-            File::makeDirectory('uploaded_images');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $imageName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('Category_Images'), $imageName);
         }
-        $path = $request->image->move($PriorPath,$imagename);
 
         DB::table('categories')->insert([
             'name' => $request->name,
             'status' => $request->status,
-            'image' => $path,
+            'image' => $imageName,
 
         ]);
 
@@ -151,7 +150,7 @@ public function getCategory(Request $request)
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
-            $destinationPath = 'uploaded_images';
+            $destinationPath = public_path('Category_Images');
             $path = $image->move($destinationPath, $imageName);
 
             if ($previousImage) {
@@ -159,7 +158,7 @@ public function getCategory(Request $request)
                 File::delete(public_path($previousImage));
             }
 
-            $category->image = $path;
+            $category->image = $imageName;
         } elseif ($request->has('delete_image')) {
             // Delete the image if delete_image checkbox is selected
             if ($previousImage) {

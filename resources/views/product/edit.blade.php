@@ -51,28 +51,13 @@
                 <div class="form-group">
                     <strong>Image:</strong>
                     <input type="file" name="image" class="form-control" placeholder="Image">
-                    <form action="{{ route('product.deleteThumbnail', $product->id) }}" method="POST">
-                        <button class="btn text-danger">Delete Thumbnail</button>
-                        @csrf
-                        @method('DELETE')
-                    </form>
-                    <img src="/Product_thumbnails/{{ $product->image }}" width="200px">
+                    <img src="{{asset('Product_thumbnails/' . $product->image)}}"width="200px">
+                    <input type="hidden" name="existing_image" value="{{ asset($product->image) }}">
+                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label>Delete_Image</label>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    @foreach($productImages as $imageId => $image)
-                        <div class="image-container" style="position: relative; display: inline-block;">
-                            <form action="{{ route('product.image.delete', ['productId' => $product->id, 'imageId' => $imageId]) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn text-danger">X</button>
-                            </form>
-                            <img src="{{ asset($image) }}" alt="Product Image" width="200px">
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+
+
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
@@ -109,10 +94,12 @@
                 <div class="form-group">
                     <label for="category_id">Category Name:</label>
                     <select name="category_id" id="category-dropdown" class="form-control">
-                        <option >Select Category</option>
+                        <option value="">Select Category</option>
                         @foreach($categories as $data)
-                            <option value="{{$data->id}}">{{$data->name}}</option>
-                         @endforeach
+                            <option value="{{ $data->id }}" {{ $data->id == $product->category_id ? 'selected' : '' }}>
+                                {{ $data->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -121,9 +108,70 @@
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
-
     </form>
+
+    <form action="{{ route('product.image.store', $product->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="form-group">
+            <label for="image">Product Image</label>
+            <input type="file" name="image" id="image" class="form-control">
+            @error('image')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload Image</button>
+    </form>
+
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="form-group">
+            <strong>Product Images:</strong>
+            @foreach($productImages as $image)
+            <form action="{{ route('delete.image', ['image' => $image->id]) }}" method="POST">
+                <button class="btn btn-danger">X</button>
+                @csrf
+                @method('DELETE')
+            </form>
+            <div class="image-container">
+                <img src="{{ asset($image['image']) }}" id="other_image" alt="Product Image" width="200px">
+            </div>
+
+            @endforeach
+        </div>
+    </div>
     @endsection
+    @section('styles')
+    <style>
+        .thumbnail-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .thumbnail-container img {
+            width: 300px;
+        }
+
+        .thumbnail-container button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            width: 300px;
+        }
+
+        .image-container button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+@endsection
 
 
 

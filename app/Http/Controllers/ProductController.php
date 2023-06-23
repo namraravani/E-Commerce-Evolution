@@ -152,19 +152,15 @@ public function getProduct(Request $request)
 // ...
 
         if ($request->hasFile("images")) {
-            $imagePaths = [];
-
             foreach ($request->file("images") as $file) {
                 $imageName = time() . '_' . $file->getClientOriginalName();
                 $file->move(public_path("uploaded_images"), $imageName);
-                $imagePaths[] = 'uploaded_images/'.$imageName;
+                $productImage = new ProductImages;
+                $productImage->product_id = $product->id;
+                $productImage->image = 'uploaded_images/'.$imageName;
+                $productImage->save();
             }
-            $imagePathString = implode(',',$imagePaths);
 
-            $productImage = new ProductImages;
-            $productImage->product_id = $product->id;
-            $productImage->image = $imagePathString;
-            $productImage->save();
         }
 
         return redirect()->route('product.index')
@@ -173,16 +169,19 @@ public function getProduct(Request $request)
 
     public function show(Product $product)
     {
-        return view('product.show',compact('product'));
+
+        $productImages = ProductImages::where('product_id', $product->id)->get();
+
+        $categories = Category::all();
+
+        return view('product.show', compact('product', 'productImages', 'categories'));
+
     }
 
 
     public function edit(Product $product)
 {
-    $productImages = ProductImages::where('product_id', $product->id)->pluck('image')->toArray();
-
-
-    $productImages = array_map('trim', explode(',', implode(',', $productImages)));
+    $productImages = ProductImages::where('product_id', $product->id)->get();
 
     $categories = Category::all();
 
@@ -190,94 +189,134 @@ public function getProduct(Request $request)
 }
 
 
-
-
-
-    public function update(Request $request, Product $product)
-    {
-        $request->validate([
-            'name' => 'required',
-            'brand' => 'required',
-            'code' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required',
-            'description' => 'required',
-            'stock_quantity' =>'required',
-            'status' => 'required',
-            'category_id' => 'required',
-        ]);
-
-        $previousImage = $product->image;
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
-            $destinationPath = 'Product_thumbnails';
-            $path = $image->move($destinationPath, $imageName);
-
-            if ($previousImage) {
-                // Delete the previous image
-                File::delete(public_path($previousImage));
-            }
-
-            $product->image = $path;
-        } elseif ($request->has('delete_image')) {
-            // Delete the image if delete_image checkbox is selected
-            if ($previousImage) {
-                File::delete(public_path($previousImage));
-            }
-            $product->image = null;
-        }
-
-        $product->name = $request->name;
-        $product->brand = $request->brand;
-        $product->code = $request->code;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->stock_quantity = $request->stock_quantity;
-        $product->status = $request->status;
-        $product->category_id = $request->category_id;
-        $product->save();
-
-        return redirect()->route('product.index')
-            ->with('success', 'Product updated successfully.');
-    }
-
-
-    public function destroy(Product $product)
+public function update(Request $request, Product $product)
 {
-    $previousThumbnail = $product->image;
+    $request->validate([
+        'name' => 'required',
+        'brand' => 'required',
+        'code' => 'required',
+        'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'price' => 'required',
+        'description' => 'required',
+        'stock_quantity' => 'required',
+        'status' => 'required',
+        'category_id' => 'required|integer',
+    ]);
 
-    if ($previousThumbnail) {
-        $thumbnailPath = public_path('Product_thumbnails/' . $previousThumbnail);
+    $previousImage = $product->image;
 
-        if (File::exists($thumbnailPath)) {
-            File::delete($thumbnailPath);
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
+        $destinationPath = public_path('Product_thumbnails');
+        $path = $image->move($destinationPath, $imageName);
+
+        if ($previousImage) {
+            File::delete(public_path('Product_thumbnails/'.$previousImage));
         }
+
+        $product->image = $imageName;
+    } elseif ($request->has('delete_thumbnail')) {
+        if ($previousImage) {
+            File::delete(public_path('Product_thumbnails/'.$previousImage));
+        }
+        $product->image = null;
     }
 
+    $product->name = $request->name;
+    $product->brand = $request->brand;
+    $product->code = $request->code;
+    $product->price = $request->price;
+    $product->description = $request->description;
+    $product->stock_quantity = $request->stock_quantity;
+    $product->status = $request->status;
+    $product->category_id = $request->category_id;
+    $product->save();
 
-    $productImages = $product->images;
-    foreach ($productImages as $productImage) {
-        $imagePaths = explode(',', $productImage->image);
-        foreach ($imagePaths as $imagePath) {
-            $imagePath = public_path($imagePath);
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
-        }
-    }
-
-
-    $product->images()->delete();
-
-    $product->delete();
 
     return redirect()->route('product.index')
-        ->with('success', 'Product deleted successfully');
+        ->with('success', 'Product updated successfully.');
 }
 
 
 
+        public function destroy(Product $product)
+    {
+        $previousThumbnail = $product->image;
+
+        if ($previousThumbnail) {
+            $thumbnailPath = public_path('Product_thumbnails/' . $previousThumbnail);
+
+            if (File::exists($thumbnailPath)) {
+                File::delete($thumbnailPath);
+            }
+        }
+
+
+        $productImages = $product->images;
+        foreach ($productImages as $productImage) {
+            $imagePaths = explode(',', $productImage->image);
+            foreach ($imagePaths as $imagePath) {
+                $imagePath = public_path($imagePath);
+                if (File::exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+            }
+        }
+
+
+        $product->images()->delete();
+
+        $product->delete();
+
+        return redirect()->route('product.index')
+            ->with('success', 'Product deleted successfully');
+    }
+
+    public function delete($image)
+    {
+        $productImage = ProductImages::where('id', $image)->first();
+        if ($productImage) {
+            if (File::exists($productImage->image)) {
+            File::delete($productImage->image);
+        }
+            $productImage->delete();
+            return redirect()->back()->with('success', 'Image deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Image not found.');
+        }
+    }
+
+
+
+public function storeImage(Request $request, $productId)
+{
+    // Validate the image file
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    // Retrieve the uploaded image file
+    $imageFile = $request->file('image');
+
+    // Generate a unique filename for the image
+    $imageName = time() . '_' . $imageFile->getClientOriginalName();
+
+    // Store the image file in the 'uploaded_images' folder
+    $imageFile->move(public_path('uploaded_images'), $imageName);
+
+    $productImage = new ProductImages;
+    $productImage->image = 'uploaded_images/'.$imageName;
+    $productImage->product_id = $productId;
+    $productImage->save();
+
+    // Create a new ProductImages instance
+
+
+    return redirect()->back()->with('success', 'Image inserted successfully.');
+}
+
+
 
 }
+
