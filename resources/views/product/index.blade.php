@@ -37,7 +37,7 @@
                                 <th>Description</th>
                                 <th>Stock Quantity </th>
                                 <th>Status </th>
-                                <th>category_id </th>
+                                <th>category Name </th>
                                 <th>Action</th>
                             </tr>
                         </thead>

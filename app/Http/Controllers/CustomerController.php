@@ -140,19 +140,19 @@ public function fetchstate(Request $request)
 
         ]);
 
-        $imagename= date('d-m-y')."-".$request->image->getClientOriginalName();
-        $PriorPath=('uploaded_images');
-        if(!$PriorPath){
-            File::makeDirectory('uploaded_images');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $imageName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('Customer_Images'), $imageName);
         }
-        $path = $request->image->move($PriorPath,$imagename);
+
         $country = Country::find($request->country);
         $state = State::find($request->state);
         $city = City::find($request->city);
 
 
         $customer = new Customer();
-        $customer->image = $request->image;
+        $customer->image = 'Customer_Images/'.$imageName;
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->email = $request->email;
@@ -183,6 +183,7 @@ public function fetchstate(Request $request)
     public function edit(Customer $customer)
     {
         $data['countries'] = Country::get(['name', 'id']);
+        $countries = Country::all();
 
         return view('customer.edit',compact('customer'),$data);
     }
@@ -191,7 +192,7 @@ public function fetchstate(Request $request)
     public function update(Request $request, Customer $customer)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
@@ -209,12 +210,14 @@ public function fetchstate(Request $request)
         $state = State::find($request->state);
         $city = City::find($request->city);
 
+
+
         $previousImage = $customer->image;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
-            $destinationPath = 'uploaded_images';
+            $destinationPath = 'Customer_Images';
             $path = $image->move($destinationPath, $imageName);
 
             if ($previousImage) {
@@ -223,12 +226,15 @@ public function fetchstate(Request $request)
             }
 
             $customer->image = $path;
-        } elseif ($request->has('delete_image')) {
+        } elseif ($request->has('delete_thumbnail')) {
 
             if ($previousImage) {
                 File::delete(public_path($previousImage));
             }
             $customer->image = null;
+        } else {
+            // No new thumbnail selected and delete_thumbnail checkbox not selected, keep the previous thumbnail
+            $customer->image = $previousImage;
         }
 
         $customer->first_name = $request->first_name;
@@ -236,9 +242,9 @@ public function fetchstate(Request $request)
         $customer->email = $request->email;
         $customer->mobileno = $request->mobileno;
         $customer->address = $request->address;
-        $customer->country = $country->name;
-        $customer->state = $state->name;
-        $customer->city = $city->name;
+        $customer->country = $request->country;
+        $customer->state = $request->state;
+        $customer->city = $request->city;
         $customer->pincode = $request->pincode;
 
 
@@ -251,10 +257,18 @@ public function fetchstate(Request $request)
 
     public function destroy(Customer $customer)
     {
-        $customer->delete();
+        $previousThumbnail = $customer->image;
+
+        if ($previousThumbnail) {
+            $thumbnailPath = public_path('Customer_Images/' . $previousThumbnail);
+
+            if (File::exists($thumbnailPath)) {
+                File::delete($thumbnailPath);
+            }
+        }
 
         return redirect()->route('customer.index')
-                        ->with('success','user deleted successfully');
+                        ->with('success','customer deleted successfully');
     }
 
 

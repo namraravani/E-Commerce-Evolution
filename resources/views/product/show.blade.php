@@ -34,7 +34,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Image:</strong>
-                <img src="{{asset('Product_thumbnails/' . $product->image)}}" width="200px">
+                <img src="{{asset($product->image)}}" width="200px">
             </div>
         </div>
         <strong>Product Images:</strong>

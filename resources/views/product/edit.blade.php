@@ -49,11 +49,16 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <strong>Image:</strong>
-                    <input type="file" name="image" class="form-control" placeholder="Image">
-                    <img src="{{asset('Product_thumbnails/' . $product->image)}}"width="200px">
-                    <input type="hidden" name="existing_image" value="{{ asset($product->image) }}">
-                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label>Delete_Image</label>
+                    <strong>Thumbnail:</strong>
+                    <input type="file" name="image" class="form-control">
+                    @if ($product->image)
+                        <div class="thumbnail-container">
+                            <button type="button" class="btn btn-danger" id="delete_thumbnail_button" onclick="deleteThumbnail()">X</button>
+                            <img src="/{{$product->image}}" alt="Product Thumbnail" width="300px" id="thumbnail_image">
+                        </div>
+                    @else
+                        <p>Thumbnail not Found</p>
+                    @endif
                 </div>
             </div>
 
@@ -104,6 +109,8 @@
                 </div>
             </div>
 
+            <input hiiden type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="0">
+
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
@@ -139,6 +146,18 @@
             @endforeach
         </div>
     </div>
+
+    <script>
+        function deleteThumbnail() {
+            const deleteThumbnailCheckbox = document.getElementById('delete_thumbnail');
+            deleteThumbnailCheckbox.checked = true;
+
+            const thumbnailContainer = document.querySelector('.thumbnail-container');
+            if (thumbnailContainer) {
+                thumbnailContainer.remove();
+            }
+        }
+    </script>
     @endsection
     @section('styles')
     <style>

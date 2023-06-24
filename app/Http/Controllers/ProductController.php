@@ -60,7 +60,7 @@ public function getProduct(Request $request)
         $category = Category::find($record->category_id);
         $categoryname = $category ? $category->name :'n/A';
 
-        $image = $record->image ? '<img src="' . asset('Product_thumbnails/' . $record->image) . '" alt="Product Image" width="100">' : 'No Image';
+        $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Product Image" width="100">' : 'No Image';
 
         $row = [
             $counter,
@@ -136,7 +136,7 @@ public function getProduct(Request $request)
             'name' => $request->name,
             'brand' => $request->brand,
             'code' => $request->code,
-            'image' => $imageName,
+            'image' => 'Product_thumbnails/'.$imageName,
             'price' => $request->price,
             'description' => $request->description,
             'stock_quantity' => $request->stock_quantity,
@@ -203,25 +203,29 @@ public function update(Request $request, Product $product)
         'category_id' => 'required|integer',
     ]);
 
-    $previousImage = $product->image;
+    $previousThumbnail = $product->image;
+        if ($request->hasFile('image')) {
+            $thumbnail = $request->file('image');
+            $thumbnailName = time() . "_" . $thumbnail->getClientOriginalName();
+            $destinationPath = 'Product_thumbnails';
+            $path = $thumbnail->move($destinationPath, $thumbnailName);
 
-    if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
-        $destinationPath = public_path('Product_thumbnails');
-        $path = $image->move($destinationPath, $imageName);
+            if ($previousThumbnail) {
+                // Delete the previous thumbnail
+                File::delete(public_path($previousThumbnail));
+            }
 
-        if ($previousImage) {
-            File::delete(public_path('Product_thumbnails/'.$previousImage));
+            $product->image = $path;
+        } elseif ($request->has('delete_thumbnail')) {
+            // Delete the thumbnail if delete_thumbnail checkbox is selected
+            if ($previousThumbnail) {
+                File::delete(public_path($previousThumbnail));
+            }
+            $product->image = null;
+        } else {
+            // No new thumbnail selected and delete_thumbnail checkbox not selected, keep the previous thumbnail
+            $product->image = $previousThumbnail;
         }
-
-        $product->image = $imageName;
-    } elseif ($request->has('delete_thumbnail')) {
-        if ($previousImage) {
-            File::delete(public_path('Product_thumbnails/'.$previousImage));
-        }
-        $product->image = null;
-    }
 
     $product->name = $request->name;
     $product->brand = $request->brand;

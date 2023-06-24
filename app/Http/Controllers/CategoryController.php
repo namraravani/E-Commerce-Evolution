@@ -30,12 +30,20 @@ class CategoryController extends Controller
 
 public function getCategory(Request $request)
 {
-    // Read value
+    // Read values
     $draw = $request->input('draw');
     $start = $request->input('start');
     $length = $request->input('length');
-
     $searchValue = $request->input('search.value');
+    $orderColumnIndex = $request->input('order.0.column');
+    $orderDir = $request->input('order.0.dir');
+
+    // Map column index to column name
+    $columns = [
+        0 => 'id',
+        2 => 'name',
+    ];
+    $orderColumnName = $columns[$orderColumnIndex];
 
     // Total records
     $totalRecords = Category::count();
@@ -45,8 +53,9 @@ public function getCategory(Request $request)
         ->count();
 
     // Fetch records with pagination and search
-    $records = Category::where('name', 'like', '%' . $searchValue . '%')
-        ->orderBy('id', 'desc')
+    $query = Category::where('name', 'like', '%' . $searchValue . '%');
+
+    $records = $query->orderBy($orderColumnName, $orderDir)
         ->skip($start)
         ->take($length)
         ->get();
@@ -55,8 +64,8 @@ public function getCategory(Request $request)
     $counter = $start + 1;
 
     foreach ($records as $record) {
-        $status = $record->status == "1" ? '<span class="badge rounded-pill text-success bg-success text-light">Active</span>' : '<span class="badge rounded-pill text-danger bg-danger text-light">Inactive</span>';
-        $image = $record->image ? '<img src="' . asset('Category_Images/' . $record->image) . '" alt="Product Image" width="100">' : 'No Image';
+        $status = $record->status == "1" ? '<span class="badge rounded-pill text-success bg-success text-light"><i class="fa-solid fa-circle-check"></i> Active</span>' : '<span class="badge rounded-pill text-danger bg-danger text-light"><i class="fa-solid fa-circle-xmark"></i> Inactive</span>';
+        $image = $record->image ? '<img src="' . asset($record->image) . '" alt="Product Image" width="100">' : 'No Image';
         $row = [
             $counter,
             $image,
@@ -70,10 +79,6 @@ public function getCategory(Request $request)
                 ' . method_field('DELETE') . '
                 <button type="submit" class="btn"><i class="fa-solid fa-trash-can"></i></button>
             </form>'
-
-
-
-
         ];
 
         $data[] = $row;
@@ -89,6 +94,7 @@ public function getCategory(Request $request)
 
     return response()->json($response);
 }
+
 
 
 
@@ -117,7 +123,7 @@ public function getCategory(Request $request)
         DB::table('categories')->insert([
             'name' => $request->name,
             'status' => $request->status,
-            'image' => $imageName,
+            'image' => 'Category_Images/'.$imageName,
 
         ]);
 
@@ -145,26 +151,28 @@ public function getCategory(Request $request)
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $previousImage = $category->image;
-
+        $previousThumbnail = $category->image;
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = date('d-m-y') . "-" . $image->getClientOriginalName();
-            $destinationPath = public_path('Category_Images');
-            $path = $image->move($destinationPath, $imageName);
+            $thumbnail = $request->file('image');
+            $thumbnailName = time() . "_" . $thumbnail->getClientOriginalName();
+            $destinationPath = 'Category_Images';
+            $path = $thumbnail->move($destinationPath, $thumbnailName);
 
-            if ($previousImage) {
-                // Delete the previous image
-                File::delete(public_path($previousImage));
+            if ($previousThumbnail) {
+                // Delete the previous thumbnail
+                File::delete(public_path($previousThumbnail));
             }
 
-            $category->image = $imageName;
-        } elseif ($request->has('delete_image')) {
-            // Delete the image if delete_image checkbox is selected
-            if ($previousImage) {
-                File::delete(public_path($previousImage));
+            $category->image = $path;
+        } elseif ($request->has('delete_thumbnail')) {
+            // Delete the thumbnail if delete_thumbnail checkbox is selected
+            if ($previousThumbnail) {
+                File::delete(public_path($previousThumbnail));
             }
             $category->image = null;
+        } else {
+            // No new thumbnail selected and delete_thumbnail checkbox not selected, keep the previous thumbnail
+            $category->image = $previousThumbnail;
         }
 
         $category->name = $request->name;

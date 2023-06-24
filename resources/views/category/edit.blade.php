@@ -50,10 +50,16 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <strong>Image:</strong>
-                    <input type="file" name="image" class="form-control" placeholder="Image">
-                    <img src="{{asset('/Category_Images' . $category->image)}}" width="300px">
-                    <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
+                    <strong>Thumbnail:</strong>
+                    <input type="file" name="image" class="form-control">
+                    @if ($category->image)
+                        <div class="thumbnail-container">
+                            <button type="button" class="btn btn-danger" id="delete_thumbnail_button" onclick="deleteThumbnail()">X</button>
+                            <img src="/{{$category->image}}" alt="Product Thumbnail" width="300px" id="thumbnail_image">
+                        </div>
+                    @else
+                        <p>Thumbnail not Found</p>
+                    @endif
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">
@@ -61,9 +67,53 @@
             </div>
         </div>
 
+        <input hidden type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="0">
+
     </form>
+
+    <script>
+        function deleteThumbnail() {
+            const deleteThumbnailCheckbox = document.getElementById('delete_thumbnail');
+            deleteThumbnailCheckbox.checked = true;
+
+            const thumbnailContainer = document.querySelector('.thumbnail-container');
+            if (thumbnailContainer) {
+                thumbnailContainer.remove();
+            }
+        }
+    </script>
+
     @endsection
 
+    @section('styles')
+    <style>
+        .thumbnail-container {
+            position: relative;
+            display: inline-block;
+        }
 
+        .thumbnail-container img {
+            width: 300px;
+        }
 
+        .thumbnail-container button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
 
+        .image-container img {
+            width: 300px;
+        }
+
+        .image-container button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+    @endsection

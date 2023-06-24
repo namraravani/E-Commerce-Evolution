@@ -29,10 +29,16 @@
 
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
-                <strong>Image:</strong>
-                <input type="file" name="image" class="form-control" placeholder="Image">
-                <img src="/{{ $customer->image }}" width="300px">
-                <input type="checkbox" class="btn btn-danger" name="delete_image" value="1"> <label >Delete_Image</label>
+                <strong>Thumbnail:</strong>
+                <input type="file" name="image" class="form-control">
+                @if ($customer->image)
+                    <div class="thumbnail-container">
+                        <button type="button" class="btn btn-danger" id="delete_thumbnail_button" onclick="deleteThumbnail()">X</button>
+                        <img src="/{{$customer->image}}" alt="Customers Photo" width="200px" id="thumbnail_image">
+                    </div>
+                @else
+                    <p>Image not Found</p>
+                @endif
             </div>
         </div>
 
@@ -73,12 +79,11 @@
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
                     <strong>Country</strong>
-
                     <select name="country" id="country-dropdown" class="form-control">
-                        <option value="{{ $customer->country }}">Select Country</option>
+                        <option value="{{ $data->country }}">{{ $customer->country }}</option>
                         @foreach($countries as $data)
                             <option value="{{$data->id}}">{{$data->name}}</option>
-                         @endforeach
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -86,6 +91,7 @@
                 <div class="form-group">
                     <strong>State</strong>
                     <select name="state" id="state-dropdown" class="form-control">
+                    <option value="{{ $data->state }}">{{ $customer->state }}</option>
                     </select>
                 </div>
             </div>
@@ -93,6 +99,7 @@
                 <div class="form-group">
                     <strong>City</strong>
                     <select name="city" id="city-dropdown" class="form-control">
+                        <option value="{{ $data->city }}">{{ $customer->city }}</option>
                     </select>
                 </div>
             </div>
@@ -107,6 +114,7 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
+        <input hidden type="checkbox" id="delete_thumbnail" name="delete_thumbnail" value="0">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
@@ -154,6 +162,16 @@
                 });
             });
         });
+
+        function deleteThumbnail() {
+            const deleteThumbnailCheckbox = document.getElementById('delete_thumbnail');
+            deleteThumbnailCheckbox.checked = true;
+
+            const thumbnailContainer = document.querySelector('.thumbnail-container');
+            if (thumbnailContainer) {
+                thumbnailContainer.remove();
+            }
+        }
     </script>
 
     </form>
