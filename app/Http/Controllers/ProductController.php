@@ -31,21 +31,21 @@ class ProductController extends Controller
 
 public function getProduct(Request $request)
 {
-    // Read value
+
     $draw = $request->input('draw');
     $start = $request->input('start');
     $length = $request->input('length');
 
     $searchValue = $request->input('search.value');
 
-    // Total records
+
     $totalRecords = Product::count();
 
-    // Apply search filter
+
     $filteredRecords = Product::where('name', 'like', '%' . $searchValue . '%')
         ->count();
 
-    // Fetch records with pagination and search
+
     $records = Product::where('name', 'like', '%' . $searchValue . '%')
         ->orderBy('id', 'desc')
         ->skip($start)
@@ -68,7 +68,7 @@ public function getProduct(Request $request)
             $record->brand,
             $record->code,
             $image,
-            '$' . $record->price,
+            '$'.$record->price,
             $record->description,
             $record->stock_quantity,
             $status,
@@ -95,11 +95,6 @@ public function getProduct(Request $request)
 
     return response()->json($response);
 }
-
-
-
-
-
 
     public function create()
     {
@@ -130,8 +125,6 @@ public function getProduct(Request $request)
             $file->move(public_path('Product_thumbnails'), $imageName);
         }
 
-
-
         $product = new Product([
             'name' => $request->name,
             'brand' => $request->brand,
@@ -147,10 +140,6 @@ public function getProduct(Request $request)
 
         $product->save();
 
-
-
-// ...
-
         if ($request->hasFile("images")) {
             foreach ($request->file("images") as $file) {
                 $imageName = time() . '_' . $file->getClientOriginalName();
@@ -160,7 +149,6 @@ public function getProduct(Request $request)
                 $productImage->image = 'uploaded_images/'.$imageName;
                 $productImage->save();
             }
-
         }
 
         return redirect()->route('product.index')
@@ -169,22 +157,16 @@ public function getProduct(Request $request)
 
     public function show(Product $product)
     {
-
         $productImages = ProductImages::where('product_id', $product->id)->get();
-
         $categories = Category::all();
-
         return view('product.show', compact('product', 'productImages', 'categories'));
-
     }
 
 
     public function edit(Product $product)
 {
     $productImages = ProductImages::where('product_id', $product->id)->get();
-
     $categories = Category::all();
-
     return view('product.edit', compact('product', 'productImages', 'categories'));
 }
 
@@ -211,19 +193,19 @@ public function update(Request $request, Product $product)
             $path = $thumbnail->move($destinationPath, $thumbnailName);
 
             if ($previousThumbnail) {
-                // Delete the previous thumbnail
+
                 File::delete(public_path($previousThumbnail));
             }
 
             $product->image = $path;
         } elseif ($request->has('delete_thumbnail')) {
-            // Delete the thumbnail if delete_thumbnail checkbox is selected
+
             if ($previousThumbnail) {
                 File::delete(public_path($previousThumbnail));
             }
             $product->image = null;
         } else {
-            // No new thumbnail selected and delete_thumbnail checkbox not selected, keep the previous thumbnail
+
             $product->image = $previousThumbnail;
         }
 
@@ -236,7 +218,6 @@ public function update(Request $request, Product $product)
     $product->status = $request->status;
     $product->category_id = $request->category_id;
     $product->save();
-
 
     return redirect()->route('product.index')
         ->with('success', 'Product updated successfully.');
@@ -256,7 +237,6 @@ public function update(Request $request, Product $product)
             }
         }
 
-
         $productImages = $product->images;
         foreach ($productImages as $productImage) {
             $imagePaths = explode(',', $productImage->image);
@@ -267,7 +247,6 @@ public function update(Request $request, Product $product)
                 }
             }
         }
-
 
         $product->images()->delete();
 
@@ -291,22 +270,16 @@ public function update(Request $request, Product $product)
         }
     }
 
-
-
 public function storeImage(Request $request, $productId)
 {
-    // Validate the image file
     $request->validate([
         'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    // Retrieve the uploaded image file
     $imageFile = $request->file('image');
 
-    // Generate a unique filename for the image
     $imageName = time() . '_' . $imageFile->getClientOriginalName();
 
-    // Store the image file in the 'uploaded_images' folder
     $imageFile->move(public_path('uploaded_images'), $imageName);
 
     $productImage = new ProductImages;
@@ -314,13 +287,8 @@ public function storeImage(Request $request, $productId)
     $productImage->product_id = $productId;
     $productImage->save();
 
-    // Create a new ProductImages instance
-
-
     return redirect()->back()->with('success', 'Image inserted successfully.');
 }
-
-
 
 }
 
