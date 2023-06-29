@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 
 
 
@@ -89,6 +90,9 @@ Route::post('/deleteimage/{$image}',[ProductController::class,'deleteImages'])->
 
 Route::delete('/deleteimage/{image}', [ProductController::class,'delete'])->name('delete.image');
 Route::post('/product/{productId}/image', [ProductController::class, 'storeImage'])->name('product.image.store');
+
+Route::resource('admin/dashboard/role', RoleController::class);
+Route::post('admin/dashboard/role/get', [RoleController::class,'getRole'])->name('role.getRole');
 
 
 

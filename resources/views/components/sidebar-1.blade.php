@@ -31,7 +31,7 @@
                     Customers
                 </a>
 
-                <a class="nav-link" href="/admin/dashboard/customer">
+                <a class="nav-link" href="/admin/dashboard/role">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-address-book"></i></div>
                     Roles
                 </a>

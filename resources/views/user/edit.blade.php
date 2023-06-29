@@ -27,6 +27,15 @@
         @csrf
         @method('PUT')
 
+        <div class="form-group">
+            <label>Select-role</label>
+            <select name="role" class="form-control">
+                @foreach($roles as $role)
+                    <option value="{{ $role }}">{{ $role }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Image:</strong>
@@ -55,6 +64,7 @@
                     <input type="text" name="email" value="{{ $user->email }}" class="form-control" placeholder="email">
                 </div>
             </div>
+            
 
 
             <div class="col-xs-12 col-sm-12 col-md-12 text-center">

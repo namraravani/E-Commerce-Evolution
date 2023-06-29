@@ -76,33 +76,34 @@
 
                 </div>
             </div>
-            <div class="col-xs-5 col-sm-5 col-md-5">
-                <div class="form-group">
-                    <strong>Country</strong>
-                    <select name="country" id="country-dropdown" class="form-control">
-                        <option value="{{ $data->country }}">{{ $customer->country }}</option>
-                        @foreach($countries as $data)
-                            <option value="{{$data->id}}">{{$data->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-5 col-sm-5 col-md-5">
-                <div class="form-group">
-                    <strong>State</strong>
-                    <select name="state" id="state-dropdown" class="form-control">
-                    <option value="{{ $data->state }}">{{ $customer->state }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-5 col-sm-5 col-md-5">
-                <div class="form-group">
-                    <strong>City</strong>
-                    <select name="city" id="city-dropdown" class="form-control">
-                        <option value="{{ $data->city }}">{{ $customer->city }}</option>
-                    </select>
-                </div>
-            </div>
+
+    <div class="col-xs-5 col-sm-5 col-md-5">
+        <div class="form-group">
+            <strong>Country</strong>
+            <select name="country" id="country-dropdown" class="form-control">
+                <option value="{{ $customer->country }}">{{ $customer->country }}</option>
+                @foreach($countries as $data)
+                    <option value="{{ $data->name }}">{{ $data->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5">
+        <div class="form-group">
+            <strong>State</strong>
+            <select name="state" id="state-dropdown" class="form-control">
+                <option value="{{ $customer->state }}">{{ $customer->state }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5">
+        <div class="form-group">
+            <strong>City</strong>
+            <select name="city" id="city-dropdown" class="form-control">
+                <option value="{{ $customer->city }}">{{ $customer->city }}</option>
+            </select>
+        </div>
+    </div>
             <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group">
                     <strong>Pincode</strong>

@@ -37,6 +37,7 @@
                         @yield('profile-content')
                         @yield('customer-content')
                         @yield('product-content')
+                        @yield('role-content')
 
 
 

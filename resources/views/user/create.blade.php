@@ -27,6 +27,14 @@
     @csrf
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="form-group">
+            <label>Select-role</label>
+            <select name="role" class="form-control">
+                @foreach($roles as $role)
+                    <option value="{{ $role }}">{{ $role }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
             <label for="image">Image:</label>
             <input type="file" name="image" class="form-control-file" id="image" accept="image/">
         </div>
@@ -49,6 +57,12 @@
                 <strong>email:</strong>
                 <input type="text" name="email" class="form-control" placeholder="email">
 
+            </div>
+        </div>
+        <div class="col-xs-5 col-sm-5 col-md-5">
+            <div class="form-group">
+                <strong>password:</strong>
+                <input type="password" name="password" class="form-control" placeholder="password">
             </div>
         </div>
 

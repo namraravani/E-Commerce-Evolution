@@ -13,6 +13,8 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -63,6 +65,7 @@ class UserController extends Controller
         foreach ($records as $record) {
             $row = [
                 $counter,
+                $record->role,
                 $image = $record->image ? '<img src="' . asset($record->image) . '" alt="User Image" width="100">' : 'No Image',
                 $record->first_name,
                 $record->last_name,
@@ -93,18 +96,22 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('user.create');
+        $roles = Role::pluck('name')->toArray();
+        return view('user.create',compact('roles'));
     }
 
     public function profile_view()
     {
         $user = Auth::user();
-        return view('profile.profile', compact('user'));
+        $roles = Role::pluck('name')->toArray(); // Fetch all role names from the "roles" table
+
+        return view('profile.profile', compact('user', 'roles'));
     }
 
     public function edit_profile(Request $request)
     {
         $userData = [
+            'role' => $request->role,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
@@ -170,10 +177,12 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'role' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
+            'password' => 'required',
         ]);
 
         $imagename = date('d-m-y') . "-" . $request->image->getClientOriginalName();
@@ -181,11 +190,14 @@ class UserController extends Controller
         $path = $request->image->move($destinationPath, $imagename);
 
         $user = new User();
+        $user->role = $request->role;
         $user->image = $path;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
+        $user->password = Hash::make($request->password);
         $user->save();
+        $user->assignRole($user->role);
 
         return redirect()->route('user.index')
             ->with('success', 'User created successfully.');
@@ -198,15 +210,18 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('user.edit', compact('user'));
+        $roles = Role::pluck('name')->toArray();
+        return view('user.edit', compact('user','roles'));
     }
 
     public function update(Request $request, User $user)
     {
         $request->validate([
+            'role' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
+
         ]);
 
         $previousImage = $user->image;
@@ -224,10 +239,12 @@ class UserController extends Controller
             $user->image = $path;
         }
 
+        $user->role = $request->role;
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
         $user->save();
+        $user->assignRole($user->role);
 
         return redirect()->route('user.index')
             ->with('success', 'User updated successfully.');
@@ -236,7 +253,6 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-
         if ($user->image) {
             File::delete(public_path($user->image));
         }
@@ -244,4 +260,6 @@ class UserController extends Controller
         return redirect()->route('user.index')
             ->with('success', 'User deleted successfully.');
     }
+
+
 }

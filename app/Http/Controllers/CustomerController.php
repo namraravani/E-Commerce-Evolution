@@ -181,12 +181,17 @@ public function fetchstate(Request $request)
 
 
     public function edit(Customer $customer)
-    {
-        $data['countries'] = Country::get(['name', 'id']);
-        $countries = Country::all();
+{
+    $data = [
+        'customer' => $customer,
+        'countries' => Country::get(['name', 'id']),
+        'defaultCountry' => $customer->country,
+        'defaultState' => $customer->state,
+        'defaultCity' => $customer->city,
+    ];
 
-        return view('customer.edit',compact('customer'),$data);
-    }
+    return view('customer.edit', $data);
+}
 
 
     public function update(Request $request, Customer $customer)
@@ -209,7 +214,6 @@ public function fetchstate(Request $request)
         $country = Country::find($request->country);
         $state = State::find($request->state);
         $city = City::find($request->city);
-
 
 
         $previousImage = $customer->image;
@@ -266,6 +270,8 @@ public function fetchstate(Request $request)
                 File::delete($thumbnailPath);
             }
         }
+
+        $customer->delete();
 
         return redirect()->route('customer.index')
                         ->with('success','customer deleted successfully');
